@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <string-array android:id="@+id/arraynavigation"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        name="navigation_content">
+        <item>主页</item>
+        <item>线路</item>
+        <item>车站</item>
+        <item>路径</item>
+        <item>时刻表</item>
+        <item>关于</item>
+    </string-array>
+</resources>

@@ -1,0 +1,30 @@
+{
+  "transitions":
+  [
+    {
+      "TransitonID": "0005",
+      "lines": [
+        {"route_id": "route1"},
+        {"route_id": "route3"}
+      ]
+    },
+
+    {
+      "TransitonID": "0015",
+      "lines": [
+        {"route_id": "route1"},
+        {"route_id": "route3"}
+      ]
+    },
+
+    {
+      "TransitonID": "0017",
+      "lines": [
+        {"route_id": "route1"},
+        {"route_id": "route2"}
+      ]
+    }
+
+  ]
+
+}

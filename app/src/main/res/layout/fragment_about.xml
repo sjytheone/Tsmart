@@ -1,0 +1,17 @@
+<LinearLayout android:orientation="vertical" android:background="@color/cm_common_bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="vertical" android:background="@drawable/tc_round_rectangle" android:padding="14.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginTop="5.0dip" android:layout_marginRight="10.0dip">
+        <ImageView android:gravity="center" android:scaleType="centerCrop" android:layout_width="match_parent" android:layout_height="190dp" android:src="@drawable/tsmart_logo" />
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:gravity="center" android:id="@+id/cm_aboutus_app_info" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="6.0dip" android:text="版本 1.0" />
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:gravity="center" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="6.0dip" android:text="© 智同交通 2016 保留一切权利。" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:background="@drawable/tc_round_rectangle" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginTop="20.0dip" android:layout_marginRight="10.0dip">
+        <RelativeLayout android:id="@+id/aboutus_changetheme" android:padding="15.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <TextView android:textSize="16.0sp" android:textColor="#ff000000" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="主题设置" android:layout_alignParentLeft="true" />
+        </RelativeLayout>
+        <View android:background="#ffcccccc" android:layout_width="fill_parent" android:layout_height="1.0dip" />
+        <RelativeLayout android:id="@+id/aboutus_checkupdate_html" android:padding="15.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <TextView android:textSize="16.0sp" android:textColor="#ff000000" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="版本更新检测" android:layout_alignParentLeft="true" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

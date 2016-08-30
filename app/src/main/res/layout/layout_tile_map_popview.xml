@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="@drawable/shape_popbg" android:paddingLeft="20.0dip" android:paddingTop="10.0dip" android:paddingRight="20.0dip" android:paddingBottom="30.0dip" android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:elevation="5dp">
+
+    <RelativeLayout android:id="@+id/main_map_popview_tile" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10.0dip">
+        <ImageView android:src="@drawable/ic_tab_local_x_sel" android:id="@+id/main_map_popview_line_icon" android:layout_width="30dp" android:layout_height="30.0dip" android:layout_alignParentLeft="true" android:layout_centerVertical="true" />
+        <TextView android:textSize="18.0sp" android:textStyle="bold" android:text="站点名称" android:textColor="@color/black" android:id="@+id/tile_map_popview_station_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_toRightOf="@id/main_map_popview_line_icon" android:layout_centerVertical="true" />
+    </RelativeLayout>
+    <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0dip" android:id="@+id/map_popvie_stattiondesc" android:visibility="gone">
+        <View android:background="@color/them_gray" android:layout_width="fill_parent" android:layout_height="1.0dip" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/map_popview_tvdesccontainer">
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout android:id="@+id/main_map_popview_station_info" android:paddingLeft="30dp" android:paddingTop="10.0dip" android:paddingBottom="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <TextView android:textSize="19.0sp" android:textStyle="bold" android:textColor="#ffa3b3c6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="站点详情" android:layout_alignParentLeft="true" android:layout_centerVertical="true" />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"  android:layout_alignParentRight="true" android:layout_centerVertical="true" />
+    </RelativeLayout>
+    <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="40.0dip" android:layout_marginTop="10.0dip" android:id="@+id/startandendBtnlayout" android:visibility="gone">
+        <View android:background="@color/them_gray" android:layout_width="fill_parent" android:layout_height="1.0dip" />
+        <LinearLayout android:paddingTop="10.0dip" android:layout_width="fill_parent" android:layout_height="38.0dip">
+            <TextView android:textSize="20.0sp" android:textStyle="bold" android:textColor="@color/station_start" android:gravity="center" android:id="@+id/tile_map_popview_start" android:layout_width="fill_parent" android:layout_height="fill_parent" android:text="起点" android:layout_weight="1.0" />
+            <View android:background="@color/them_gray" android:layout_width="1.0dip" android:layout_height="fill_parent" />
+            <TextView android:textSize="20.0sp" android:textStyle="bold" android:textColor="@color/station_end" android:gravity="center" android:id="@+id/tile_map_popview_end" android:layout_width="fill_parent" android:layout_height="fill_parent" android:text="终点" android:layout_weight="1.0" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

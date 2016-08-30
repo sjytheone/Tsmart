@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="it_icon" format="reference"></attr>
+    <attr name="it_color" format="color"></attr>
+    <attr name="text" format="string"></attr>
+    <attr name="text_size" format="dimension"></attr>
+	<attr name="hide_text" format="boolean"></attr>
+	
+    <declare-styleable name="ColorIconText">
+        <attr name="it_icon"></attr>
+        <attr name="it_color"></attr>
+        <attr name="text"></attr>
+        <attr name="text_size"></attr>
+        <attr name="hide_text"></attr>
+    </declare-styleable>
+    
+</resources>

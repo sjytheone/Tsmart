@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="nothing">#00ffffff</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#323232</color>
+    <color name="theme_white">#F6F6F6</color>
+    <color name="theme_press_blue">#0087d4</color>
+    <color name="theme_blue">#00A2FF</color>
+    <color name="theme_blue_pressed">#0C88CF</color>
+    <color name="station_start">#ff44cba9</color>
+    <color name="station_end">#ffff5722</color>
+    <color name="station_red">#ffda1818</color>
+    <color name="them_gray">#ffAAAAAA</color>
+    <color name="deep_dark">#ffAAAAAA</color>
+    <color name="map_text_color">#FF81756B</color>
+    <color name="halftransparent">#E0ffffff</color>
+    <color name="cm_common_bg">#fff6f9f9</color>
+    <color name="light_grey">#ffbebebe</color>
+    <color name="line_color">#50B3FA</color>
+    <color name="text_color">#7C7F89</color>
+
+    <color name="blue">#2196F3</color>
+    <color name="dark_blue">#2196F3</color>
+    <color name="accent_blue">#448AFF</color>
+
+    <color name="red">#F44336</color>
+    <color name="dark_red">#F44336</color>
+    <color name="accent_red">#F44336</color>
+
+    <color name="brown">#795548</color>
+    <color name="dark_brown">#795548</color>
+    <color name="accent_brown">#795548</color>
+
+    <color name="blue_grey">#607D8B</color>
+    <color name="dark_blue_grey">#607D8B</color>
+    <color name="accent_blue_grey">#607D8B</color>
+
+    <color name="yellow">#FF9800</color>
+    <color name="dark_yellow">#FF9800</color>
+    <color name="accent_yellow">#FF9800</color>
+
+    <color name="deep_purple">#673AB7</color>
+    <color name="dark_deep_purple">#673AB7</color>
+    <color name="accent_deep_purple">#673AB7</color>
+
+    <color name="pink">#E91E63</color>
+    <color name="dark_pink">#E91E63</color>
+    <color name="accent_pink">#E91E63</color>
+
+    <color name="green">#4CAF50</color>
+    <color name="dark_green">#4CAF50</color>
+    <color name="accent_green">#4CAF50</color>
+
+</resources>

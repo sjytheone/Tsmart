@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/bdmap_route_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.baidu.mapapi.map.MapView>
+
+        <LinearLayout android:orientation="vertical"
+            android:id="@+id/mainmap_zoom_area"
+            android:paddingRight="5.0dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10.0dip"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:gravity="top"
+
+            >
+
+            <ImageView
+                android:id="@+id/bdmap_maplayer"
+                android:layout_width="wrap_content" android:layout_height="45dp" android:src="@drawable/selector_maplayer" android:layout_weight="1.0"
+                android:clickable="true" />
+
+            <!--<ImageView android:id="@+id/mainmap_zoom_in" android:layout_width="45dp" android:layout_height="45dp" android:src="@drawable/cm_mainmap_zoom_in_bg" android:layout_weight="1.0" />
+            <ImageView android:id="@+id/mainmap_zoom_out" android:layout_width="45dp" android:layout_height="45dp" android:src="@drawable/cm_mainmap_zoom_out_bg" android:layout_weight="1.0" />
+             -->
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/bdmap_redo"
+            android:layout_width="wrap_content" android:layout_height="45dp" android:src="@drawable/ride_path_ic" android:layout_weight="1.0"
+            android:clickable="true" />
+
+
+        <TextView
+            android:gravity="top"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@color/theme_white"
+            android:text="智同交通" android:textSize="25dp"
+            android:background="@color/transparent"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</FrameLayout>

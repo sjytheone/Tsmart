@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/tb_myToolbar"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:elevation="5dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+
+            >
+
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:id="@+id/imageRoute"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+
+                android:scaleType="fitXY"
+                android:src="@drawable/map_white_72x72"
+                android:background="@color/nothing"
+                />
+
+        </android.support.v7.widget.Toolbar>
+
+        <!--<com.sjy.bushelper.CustomViewPage
+            android:id="@+id/id_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/gallery_no_pic">
+        </com.sjy.bushelper.CustomViewPage>
+        -->
+        <FrameLayout
+            android:id="@+id/_maincontent_framelayout_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/theme_white">
+            >
+        </FrameLayout>
+
+    </LinearLayout>
+</LinearLayout>

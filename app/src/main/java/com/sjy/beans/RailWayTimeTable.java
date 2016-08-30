@@ -1,0 +1,213 @@
+package com.sjy.beans;
+
+import com.sjy.bushelper.MyApp;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.TreeMap;
+
+/**
+ * Created by Administrator on 2016/7/16.
+ */
+public class RailWayTimeTable {
+
+    private String mRailWayTrainID;
+    private Map<String,TimeItemBean> mMapStationVTime= new LinkedHashMap<>();
+    private MyApp myApp = MyApp.theIns();
+
+    public String getStrStartTime() {
+        return strStartTime;
+    }
+
+    private String strStartTime;
+    private String startStationID;
+    private String strEndStationID;
+
+
+    public String getStrEndTime() {
+        return strEndTime;
+    }
+
+
+    private String strEndTime;
+
+    public void setStrRailWayTrainID(String trainID){
+        mRailWayTrainID = trainID;
+    }
+
+    public String getmRailWayTrainID(){
+        return mRailWayTrainID;
+    }
+
+    public Map<String,TimeItemBean> getStationVtimeMap(){
+        return mMapStationVTime;
+    }
+
+    public void AddNode(String stationID,String arrTime){
+        TimeItemBean ib = new TimeItemBean(arrTime);
+        mMapStationVTime.put(stationID,ib);
+    }
+
+    public TimeItemBean getArrTime(String stationID){
+        TimeItemBean ib = mMapStationVTime.get(stationID);
+        return ib;
+    }
+
+    public int StationIndex(String stationID){
+        int temp = -1;
+        Set<String> keySet = mMapStationVTime.keySet();
+        int nCount = 0;
+        for (String str : keySet){
+            if (str.compareTo(stationID) == 0){
+                temp = nCount; break;
+            }
+            nCount++;
+
+        }
+        return temp;
+    }
+
+
+    public int getTimeStationStep(long MillisTime){
+        int minIndex = 0; long resMin = Long.MAX_VALUE;
+        int count = 0;
+        Set<Map.Entry<String,TimeItemBean>> entrySet = mMapStationVTime.entrySet();
+        for (Map.Entry<String,TimeItemBean> entry : entrySet){
+            long res = entry.getValue().getMillisTime() - MillisTime;
+            if (res < resMin && res >= 0){
+                resMin = res;
+                minIndex = count;
+            }
+            count++;
+        }
+        return minIndex;
+
+    }
+
+    public String getBelongRouteID(){
+        String routeID = "";
+        char first = mRailWayTrainID.charAt(0);
+        if (first == 'K')
+            first = mRailWayTrainID.charAt(1);
+        switch (first){
+            case '1' : routeID = "route1"; break;
+            case '2' : routeID = "route2"; break;
+            case '3' : routeID = "route3"; break;
+            case '5' : routeID = "route5"; break;
+            default: break;
+        }
+        return routeID;
+    }
+
+
+    public String getTimeDesc() {
+        Collection<TimeItemBean> s = mMapStationVTime.values();
+        List<TimeItemBean> ls = new ArrayList<>(s);
+        TimeItemBean first = ls.get(0);
+        TimeItemBean last = ls.get(ls.size() - 1);
+
+        long abs = first.getMillisTime() - last.getMillisTime();
+        String desc = "始发:" + first.getstrTime() + "-终到" + last.getstrTime();
+        if (abs >= 0){
+            desc = "始发:" + last.getstrTime() + "-终到" + first.getstrTime();
+        }
+
+        return desc;
+    }
+
+    public void ProcessDatas(){
+        List arrayList = new ArrayList(mMapStationVTime.entrySet());
+        Collections.sort(arrayList, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Map.Entry obj1 = (Map.Entry) o1;
+                Map.Entry obj2 = (Map.Entry) o2;
+
+                TimeItemBean ib1 = (TimeItemBean) obj1.getValue();
+                TimeItemBean ib2 = (TimeItemBean) obj2.getValue();
+                Long l1 = (Long)ib1.getMillisTime();
+                Long l2 = (Long)ib2.getMillisTime();
+
+                return l1.compareTo(l2);
+            }
+        });
+
+        mMapStationVTime.clear();
+        for (int i = 0 ; i < arrayList.size() ; ++i){
+            Map.Entry<String,TimeItemBean >  entry = (Map.Entry<String, TimeItemBean>) arrayList.get(i);
+            mMapStationVTime.put(entry.getKey(),entry.getValue());
+            if (i == 0){
+               this.startStationID = entry.getKey();
+               this.strStartTime = entry.getValue().getstrTime();
+            }else if (i == arrayList.size() - 1){
+                this.strEndStationID = entry.getKey();
+                this.strEndTime = entry.getValue().getstrTime();
+            }
+        }
+    }
+
+    public boolean isInTimeSection(){
+        long curTime = System.currentTimeMillis();
+        Collection<TimeItemBean> s = mMapStationVTime.values();
+        List<TimeItemBean> ls = new ArrayList<>(s);
+        TimeItemBean first = ls.get(0);
+        TimeItemBean last = ls.get(ls.size() - 1);
+        if (curTime >= first.getMillisTime() && curTime <= last.getMillisTime())
+            return true;
+
+        return false;
+    }
+
+    public List<BigMapstationInfo> getPassingStations(){
+        List<BigMapstationInfo> bigInfoList = new ArrayList<>();
+        Set<String> keySet = mMapStationVTime.keySet();
+        Iterator it = keySet.iterator();
+        while (it.hasNext()){
+            String strStation = (String) it.next();
+            BigMapstationInfo biginfo = myApp.findBigmapStation(strStation);
+            bigInfoList.add(biginfo);
+        }
+        return bigInfoList;
+    }
+
+    public long getStationCurTimeIntervals(String stationID){
+        TimeItemBean ib = getArrTime(stationID);
+        if (ib != null){
+            long mililistime = ib.getMillisTime();
+            long lIntervals = mililistime - System.currentTimeMillis();
+            if (mililistime - System.currentTimeMillis() >= 0)
+            {
+                return lIntervals;
+            }
+        }
+        return Long.MAX_VALUE;
+    }
+
+
+    public boolean hasPassStation(String stationID){
+        TimeItemBean ib = getArrTime(stationID);
+        return ib == null ? false : true;
+    }
+
+    public int railWayDerection(String sid,String eid){
+        if (StationIndex(sid) > StationIndex(eid))
+            return 2;
+        return 1;
+    }
+
+    //获取列车终点站名称
+    public String getDestinationID(){
+        return strEndStationID;
+    }
+}

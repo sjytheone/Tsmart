@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="searchview-3.5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.lapism/searchview/3.5/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.lapism/searchview/3.5/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.lapism/searchview/3.5/5d915bdc042e6e2c7126cb37d61ab1aa603d136b/searchview-3.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

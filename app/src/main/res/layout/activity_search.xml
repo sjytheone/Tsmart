@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+        <com.arlib.floatingsearchview.FloatingSearchView
+            android:id="@+id/search_view"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            app:floatingSearch_backgroundColor="?attr/colorPrimary"
+            app:floatingSearch_hintTextColor="@color/white"
+            app:floatingSearch_viewTextColor="@color/white"
+            app:floatingSearch_leftActionColor="@color/white"
+            app:floatingSearch_clearBtnColor="@color/white"
+            app:floatingSearch_menuItemIconColor="@color/white"
+
+            app:floatingSearch_searchHint="Search..."
+            app:floatingSearch_suggestionsListAnimDuration="250"
+            app:floatingSearch_showSearchKey="true"
+            app:floatingSearch_leftActionMode="showHome"
+            app:floatingSearch_menu="@menu/routemenu"
+            app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
+
+</FrameLayout>

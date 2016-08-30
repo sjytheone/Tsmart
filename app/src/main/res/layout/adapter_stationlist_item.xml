@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <com.balysv.materialripple.MaterialRippleLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:mrl_rippleColor="@color/light_grey"
+        app:mrl_rippleOverlay="true"
+        app:mrl_rippleAlpha="0.5"
+        app:mrl_rippleInAdapter="true"
+        >
+
+    <LinearLayout
+        android:id="@+id/_LinearLayout_Conf_Item_Bg"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp" >
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/_routeadapter_left_Icon"
+                android:layout_width="31dp"
+                android:layout_height="39dp"
+                android:src="@drawable/ic_tab_local_x_sel"
+
+                />
+
+            <TextView
+                android:id="@+id/_routeadapter_routeindex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="5"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/_stationlistitem_station_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:textColor="@color/text_color"
+                android:text="station"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/_routeadapter_descrip_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:singleLine="true"
+                android:text="高新大道"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    </com.balysv.materialripple.MaterialRippleLayout>
+
+</LinearLayout>

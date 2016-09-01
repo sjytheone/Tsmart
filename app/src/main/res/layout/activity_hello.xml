@@ -2,21 +2,40 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
-    android:gravity="center" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/colorPrimary"
+    android:gravity="center">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:background="?attr/colorPrimary">
 
+        <!--
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageView3"
+            android:background="?attr/colorPrimary"
             android:src="@drawable/tsmart_logo"
             android:layout_gravity="center" />
+            -->
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="智同科技"
+            android:textSize="45sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColorHighlight="#ffffff"
+            android:singleLine="true"
+            />
 
         <TextView
             android:id="@+id/textView2"
@@ -25,7 +44,7 @@
             android:layout_below="@+id/textView1"
             android:text="城市轨道交通出行诱导系统"
             android:textSize="18sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginTop="100dp"
             android:gravity="center"
             android:layout_gravity="center"
@@ -34,18 +53,14 @@
             android:password="false"
             android:phoneNumber="false" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom|center">
 
         <com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar
             android:id="@+id/helloactivity_progressBar"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            app:mlpb_progress_color="@color/white"
             android:background="@color/nothing" />
-        </FrameLayout>
     </FrameLayout>
 
 </FrameLayout>

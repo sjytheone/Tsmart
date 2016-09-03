@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.CircleOptions;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -34,14 +33,10 @@ import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.utils.CoordinateConverter;
-import com.sjy.baseactivity.ShowRailTimeTable;
 import com.sjy.baseactivity.ShowStationActivity;
-import com.sjy.beans.RailOption;
 import com.sjy.beans.RouteItemBean;
-import com.sjy.beans.RouteLineItemBean;
 import com.sjy.bushelper.MyApp;
 import com.sjy.bushelper.R;
-import com.sjy.bushelper.RailItemManager;
 import com.sjy.listener.IFragemDataListener;
 import com.sjy.listener.IRailItemMoveListener;
 
@@ -59,7 +54,6 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
     private MapView bdMapView = null;
     private BaiduMap bdMap = null;
     private CoordinateConverter mConverter = new CoordinateConverter();
-    private RailItemManager mRailItemManager = null;
     private PopupWindow mPopWindow = null;
     private TextView mTileMapStart;
     private TextView mTileMapEnd;
@@ -76,8 +70,6 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
     private Map<Integer,BitmapDescriptor> mapStationMarkerRes =  new HashMap<>();
 
     private List<LatLng> stationTitles = new ArrayList<>();
-
-    private List<RailOption> mlsRailOptions = new ArrayList<>();
 
     private int nCurentZoom = 14;
     LatLngBounds mMapbounds = null;
@@ -96,15 +88,6 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
     }
 
     private Handler mHandler = new Handler();
-
-    private Runnable mRunableRefreshMarker = new Runnable() {
-        @Override
-        public void run() {
-            UpdataMark();
-
-            //mHandler.postDelayed(mRunableRefreshMarker, 6000);
-        }
-    };
 
     private Runnable mRunable = new Runnable() {
         @Override
@@ -143,24 +126,12 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
         mPopWindow.setBackgroundDrawable(new BitmapDrawable());
         mPopWindow.setOutsideTouchable(true);
 
-        mRailItemManager = new RailItemManager();
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         bdMapView.setVisibility(hidden ? View.GONE : View.VISIBLE);
-        if (hidden){
-            if (bdMap!= null){
-                bdMap.clear();
-                mHandler.removeCallbacks(mRunableRefreshMarker);
-            }
-
-        }else {
-            if (bdMap != null){
-                mHandler.postDelayed(mRunableRefreshMarker,300);
-            }
-        }
     }
 
     @Override
@@ -222,39 +193,39 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
 
     public void InitRouteLines(){
 
-        List<RouteLineItemBean> allrouteLine = MyApp.theIns().getAllRouteLine();
-        for (RouteLineItemBean routeItem : allrouteLine){
-            if (routeItem.getRouteID().compareTo("route5") == 0){
-                //continue;
-            }
-
-            PolylineOptions line = new PolylineOptions();
-            line.color(routeItem.getColor());
-            line.width(8);
-            line.keepScale(true);
-            List<LatLng> lats = new ArrayList<>();
-
-                List<LatLng> ls = routeItem.getRouteLatLng();
-                int x = 1;
-                for (LatLng latlng : ls){
-                    lats.add(latlng);
-                    CircleOptions circ = new CircleOptions().center(latlng).fillColor(routeItem.getColor()).radius(25);
-                    mRouteDotOptions.add(circ);
-
-//                    BitmapDescriptor bitIcon = BitmapDescriptorFactory.fromAsset("resourcedata/tranist_detail_map_travel_busstation_ic.png");
-//                    MarkerOptions mkcirc = new MarkerOptions().flat(true).icon(bitIcon).position(latlng).perspective(true);
-//                    mRouteDotOptions.add(mkcirc);
-                    TextOptions tips = new TextOptions().position(latlng).text(""+x).fontColor(Color.RED).fontSize(30);
-                    mRoutePosIndex.add(tips);
-                    x++;
-                }
-            line.points(lats);
-            mRouteLineOptions.add(line);
-        }
-
-        mlineTest.color(Color.parseColor("#C637AF"));
-        mlineTest.width(8);
-        mlineTest.keepScale(true);
+//        List<RouteLineItemBean> allrouteLine = MyApp.theIns().getAllRouteLine();
+//        for (RouteLineItemBean routeItem : allrouteLine){
+//            if (routeItem.getRouteID().compareTo("route5") == 0){
+//                //continue;
+//            }
+//
+//            PolylineOptions line = new PolylineOptions();
+//            line.color(routeItem.getColor());
+//            line.width(8);
+//            line.keepScale(true);
+//            List<LatLng> lats = new ArrayList<>();
+//
+//                List<LatLng> ls = routeItem.getRouteLatLng();
+//                int x = 1;
+//                for (LatLng latlng : ls){
+//                    lats.add(latlng);
+//                    CircleOptions circ = new CircleOptions().center(latlng).fillColor(routeItem.getColor()).radius(25);
+//                    mRouteDotOptions.add(circ);
+//
+////                    BitmapDescriptor bitIcon = BitmapDescriptorFactory.fromAsset("resourcedata/tranist_detail_map_travel_busstation_ic.png");
+////                    MarkerOptions mkcirc = new MarkerOptions().flat(true).icon(bitIcon).position(latlng).perspective(true);
+////                    mRouteDotOptions.add(mkcirc);
+//                    TextOptions tips = new TextOptions().position(latlng).text(""+x).fontColor(Color.RED).fontSize(30);
+//                    mRoutePosIndex.add(tips);
+//                    x++;
+//                }
+//            line.points(lats);
+//            mRouteLineOptions.add(line);
+//        }
+//
+//        mlineTest.color(Color.parseColor("#C637AF"));
+//        mlineTest.width(8);
+//        mlineTest.keepScale(true);
     }
 
     public LatLng gpsLatLngConvert(LatLng latLng){
@@ -306,15 +277,6 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
                     break;
                 case R.id.layout_tilemap_railinfo: {
                     mPopWindow.dismiss();
-                    RailOption option = (RailOption) v.getTag();
-                    Intent itent = new Intent();
-                    //intent.setAction("com.sjy.baseactivity.ShowStationActivity");
-                    itent.setClass(getActivity().getApplicationContext(), ShowRailTimeTable.class);
-                    Bundle bd = new Bundle();
-                    bd.putString("strID", option.getStrRailID());
-                    bd.putString("strDesc", "始发:" + option.getStrStartTime() + "-终到:" + option.getStrEndTime());
-                    itent.putExtra("information", bd);
-                    startActivity(itent);
                 }
                     break;
                 default:
@@ -327,11 +289,8 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
     public void showPopView(Marker marker){
 
         RouteItemBean ib = (RouteItemBean) marker.getExtraInfo().get("station");
-        RailOption option = (RailOption) marker.getExtraInfo().get("railinfo");
         if (ib != null){
             showStationInfo(marker, ib);
-        }else if (option != null){
-            showRailItemInfo(option);
         }
     }
 
@@ -380,28 +339,6 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
         mPopWindow.showAtLocation(bdMapView, Gravity.CENTER, 0, 0);
     }
 
-    public void showRailItemInfo( RailOption option ){
-        if (mViewRailInfo == null){
-            mViewRailInfo = getActivity().getLayoutInflater().inflate(R.layout.layout_tile_map_railinfo, null);
-            RelativeLayout layout = (RelativeLayout) mViewRailInfo.findViewById(R.id.layout_tilemap_railinfo);
-            layout.setOnTouchListener(myTouchListener);
-            layout.setOnClickListener(mClickListener);
-            //mViewRailInfo.setAlpha(0.5f);
-            //mViewRailInfo.setBackgroundColor(Color.parseColor("#e0000000"));
-            
-        }
-        mPopWindow.setContentView(mViewRailInfo);
-        TextView tvRailID = (TextView) mViewRailInfo.findViewById(R.id.layout_tilemap_railid);
-        TextView tvStart = (TextView) mViewRailInfo.findViewById(R.id.layout_tilemap_railinfo_starttime);
-        TextView tvEnd = (TextView) mViewRailInfo.findViewById(R.id.layout_tilemap_railinfo_endtime);
-        RelativeLayout layout = (RelativeLayout) mViewRailInfo.findViewById(R.id.layout_tilemap_railinfo);
-        layout.setTag(option);
-        tvStart.setText(option.getStrStartTime());
-        tvEnd.setText(option.getStrEndTime());
-        tvRailID.setText(option.getStrRailID());
-        mPopWindow.showAtLocation(bdMapView, Gravity.CENTER, 0, 0);
-    }
-
 
     @Override
     public void onResume() {
@@ -428,7 +365,7 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
 
         bdMap = bdMapView.getMap();
         InitStationData();
-        InitRouteLines();
+        //InitRouteLines();
         //InitRailOptions();
 
 //        mRailItemManager.setRailItemMoveListener(this);
@@ -551,13 +488,6 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
 
     }
 
-    public synchronized void UpdataMark(){
-        if (mlsRailOptions.isEmpty())
-            return;
-
-        RefreshBDMapOverLayer(nCurentZoom);
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -567,17 +497,5 @@ public class BDMapRouteFragment extends Fragment implements IFragemDataListener,
     @Override
     public void onRailItemMoved() {
 
-        mHandler.postDelayed(mRunableRefreshMarker, 1000);
-
     }
-
-    protected void startDrawLine2(LatLng latlng){
-
-        mlineTestDot.add(latlng);
-        if (mlineTestDot.size() <= 2)
-            return;
-        mlineTest.points(mlineTestDot);
-        RefreshBDMapOverLayer(19);
-    }
-
 }

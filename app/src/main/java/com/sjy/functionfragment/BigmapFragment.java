@@ -145,7 +145,9 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
         if (tileMapMode != BigTileMap.TileMapMode.GRID.ordinal()) {
             mRailOptionMgr.setTileMap(mBigImageView);
             mRailOptionMgr.setRailItemMoveListener(BigmapFragment.this);
-            mRailOptionMgr.startRailDataProcess();
+
+
+            //mRailOptionMgr.startRailDataProcess();
         }
 
         return v;

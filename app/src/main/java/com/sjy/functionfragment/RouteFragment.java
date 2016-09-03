@@ -1,35 +1,25 @@
 package com.sjy.functionfragment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sjy.adapter.OnAdapterItemClickListener;
 import com.sjy.adapter.RouteLineRecyclerAdapter;
 import com.sjy.baseactivity.ShowDetailRouteActivity;
-import com.sjy.baseactivity.ShowStationActivity;
 import com.sjy.beans.RailWayLineItem;
-import com.sjy.beans.RouteItemBean;
-import com.sjy.beans.RouteLineItemBean;
 import com.sjy.bushelper.MyApp;
 import com.sjy.bushelper.R;
 import com.sjy.divider.HorizontalDividerItemDecoration;
 
 import java.util.List;
-import java.util.Random;
 
 public class RouteFragment extends Fragment {
 
@@ -63,7 +53,7 @@ public class RouteFragment extends Fragment {
 
 	private void InitData(){
 
-		items = MyApp.theIns().getRailWayLineItes();
+		items = MyApp.theIns().getRailWayLineItems();
 		mRecyclerAdapter = new RouteLineRecyclerAdapter(getContext(),items);
 
 		mRecyclerAdapter.setOnAdapterItemClickListener(new OnAdapterItemClickListener() {

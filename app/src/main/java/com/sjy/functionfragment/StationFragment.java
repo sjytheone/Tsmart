@@ -14,8 +14,8 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.sjy.baseactivity.ShowStationActivity;
+import com.sjy.beans.RailWayLineItem;
 import com.sjy.beans.RouteItemBean;
-import com.sjy.beans.RouteLineItemBean;
 import com.sjy.bushelper.MyApp;
 import com.sjy.bushelper.R;
 import com.sjy.utils.CharacterParser;
@@ -68,20 +68,20 @@ public class StationFragment extends Fragment {
 
         mListReal.addAll(jsonStations);
 
-        List<RouteLineItemBean> routeLine = MyApp.theIns().getAllRouteLine();
+        //List<RouteLineItemBean> routeLine = MyApp.theIns().getAllRouteLine();
+        List<RailWayLineItem> railWayLines = MyApp.theIns().getRailWayLineItems();
 
-
-        for (RouteItemBean itembean : mListReal){
-            if (itembean.getStationFragmentDes() == null){
-                String strDesc = "";
-                for (RouteLineItemBean routeItem : routeLine){
-                    if (itembean.getRouteOder(routeItem.getRouteID()) > 0){
-                        strDesc += routeItem.getStrRouteName() + " ";
-                    }
-                }
-                itembean.setStationFragmentDes(strDesc);
-            }
-        }
+//        for (RouteItemBean itembean : mListReal){
+//            if (itembean.getStationFragmentDes() == null){
+//                String strDesc = "";
+//                for (RailWayLineItem railWayLineItem : railWayLines){
+//                    if (itembean.getRouteOder(railWayLineItem.getRailWayLineID()) > 0){
+//                        strDesc += railWayLineItem.getRailWayLineName() + " ";
+//                    }
+//                }
+//                itembean.setStationFragmentDes(strDesc);
+//            }
+//        }
         Collections.sort(mListReal, new PinyinComparator());
 
 

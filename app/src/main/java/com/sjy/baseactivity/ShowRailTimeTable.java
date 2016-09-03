@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.sjy.adapter.OnAdapterItemClickListener;
 import com.sjy.adapter.RouteRecyclerAdapter;
+import com.sjy.beans.BigMapstationInfo;
+import com.sjy.beans.RailWayLineItem;
 import com.sjy.beans.RailWayTimeTable;
 import com.sjy.beans.RouteItemBean;
 import com.sjy.beans.TimeItemBean;
@@ -52,12 +54,9 @@ public class ShowRailTimeTable extends BasicActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler.post(mRunnable);
     }
 
     public void InitView(){
-        mHandler.removeCallbacks(mRunnable);
-
         Toolbar tb = (Toolbar)findViewById(R.id.tb_functiontoolbar);
         tb.setTitleTextColor(getResources().getColor(R.color.theme_white));
         setSupportActionBar(tb);
@@ -100,6 +99,7 @@ public class ShowRailTimeTable extends BasicActivity {
 
         List<RailWayTimeTable> timeTables = MyApp.theIns().getRailWayTimeTables();
         List<RouteItemBean> allStations = MyApp.theIns().getJsonStations();
+        //List<BigMapstationInfo> allStations = MyApp.theIns().getBigMapStationPos_flat();
 
         Map<String,TimeItemBean> mapStationVTime = null;
         for (RailWayTimeTable itm : timeTables){
@@ -117,9 +117,11 @@ public class ShowRailTimeTable extends BasicActivity {
 
                 for (RouteItemBean ib : allStations){
                     if (ib.getStrStationID().compareTo(stationID) == 0){
-                        ib.setStrArrayTime(strTime);
-                        //ib.getStrArrayTime()
-                        mRouteData.add(ib);
+                        RouteItemBean itemBean = new RouteItemBean();
+                        itemBean.setStrArrayTime(strTime);
+                        itemBean.setStrStationName(ib.getStrStationName());
+                        itemBean.setStrStationID(ib.getStrStationID());
+                        mRouteData.add(itemBean);
                     }
                 }
             }
@@ -147,44 +149,7 @@ public class ShowRailTimeTable extends BasicActivity {
             }
         });
 
-        mHandler.post(mRunnable);
     }
-
-
-    public void UpdateListTime(){
-        Time t=new Time();
-        t.setToNow(); // 取得系统时间。
-        int hour = t.hour; // 0-23
-        int minute = t.minute;
-
-        for (RouteItemBean routeItem : mRouteData){
-            String strArrayTime = routeItem.getStrArrayTime();
-            String[] atime = strArrayTime.split(":");
-            int ah = Integer.parseInt(atime[0]);
-            int am = Integer.parseInt(atime[1]);
-            if (ah == hour && (am - minute >= 0) && (am - minute) <=2){
-                routeItem.setnBusCount(1);
-                routeItem.setTailArrived(true);
-            }else {
-                routeItem.setnBusCount(0);
-                routeItem.setTailArrived(false);
-            }
-        }
-
-        routeAdapter.setAdapterBase(mRouteData);
-        routeAdapter.notifyDataSetChanged();
-    }
-
-    private Runnable mRunnable = new Runnable() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            UpdateListTime();
-
-            mHandler.postDelayed(mRunnable, 50*1000);
-        }
-    };
 
     private Handler mHandler = new Handler();
 

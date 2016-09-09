@@ -95,10 +95,10 @@ public class FragmentMainContent extends Fragment
         bigmapFragment.setArguments(bd);
         mTabs.add(bigmapFragment);
 
-        BDMapRouteFragment bdRouteFragment = BDMapRouteFragment.newInstance();
-        mTabs.add(bdRouteFragment);
+        //BDMapRouteFragment bdRouteFragment = BDMapRouteFragment.newInstance();
+        //mTabs.add(bdRouteFragment);
 
-        mDataListener.add(bdRouteFragment);
+        //mDataListener.add(bdRouteFragment);
 
 
         for (int i = 0 ; i < mTabs.size() ; ++i){

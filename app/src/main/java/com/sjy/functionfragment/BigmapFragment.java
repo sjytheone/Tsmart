@@ -11,11 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -50,6 +46,7 @@ import com.sjy.bushelper.R;
 import com.sjy.divider.HorizontalDividerItemDecoration;
 import com.sjy.listener.IFragemDataListener;
 import com.sjy.listener.IRailItemMoveListener;
+import com.sjy.net.StationPassTime;
 import com.sjy.widget.MarqueeTextView;
 
 import java.util.List;
@@ -79,8 +76,9 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
     //private SlideBottomPanel mSlideBottomPlanel = null;
     private BottomSheetLayout mBottomSheetLayout = null;
     private LinearLayout mRoutePlanDetailInfo = null;
-    private View outView;
 
+
+    private View outView;
     //BottomSheetFragment
     private RecyclerView mRecyclerView;
     private RoutePlanRecyclerAdapter mRoutePlanRecyclerAdapter;
@@ -117,8 +115,8 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
         mBottomSheetLayout = (BottomSheetLayout) v.findViewById(R.id.bigmap_bottomSheetLayout);
         mBottomSheetLayout.setShouldDimContentView(false);
 
-        outView = LayoutInflater.from(getContext()).inflate(R.layout.recycler_routeplant, mBottomSheetLayout, false);
-        InitRoutePlanView(outView);
+        outView = LayoutInflater.from(getContext()).inflate(R.layout.routeplant_shower, mBottomSheetLayout, false);
+        //InitRoutePlanView(outView);
 
         mRoutePlanDetailInfo = (LinearLayout) v.findViewById(R.id._routeplan_showdetail_);
         mRoutePlanDetailInfo.setClickable(true);
@@ -147,7 +145,7 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
             mRailOptionMgr.setRailItemMoveListener(BigmapFragment.this);
 
 
-            //mRailOptionMgr.startRailDataProcess();
+            mRailOptionMgr.startRailDataProcess();
         }
 
         return v;
@@ -238,22 +236,25 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
         if (tileMapMode != BigTileMap.TileMapMode.GRID.ordinal()){
             LinearLayout containerdesc = (LinearLayout) mViewStationInfo.findViewById(R.id.map_popview_tvdesccontainer);
             containerdesc.removeAllViews();
-            Map<String,TileMapRailOption> mp = mRailOptionMgr.getStationNearTimeTable(station.getStationID());
             boolean bshowview = false;
-            for (Map.Entry<String,TileMapRailOption> entry : mp.entrySet()){
-                TileMapRailOption ioption = entry.getValue();
-                String out = "下次到站时间:" + ioption.getRailArrTime(station.getStationID()) + "列车方向:" + ioption.getDestination();
+            List<String> beLongstations = station.getBelongStationIDs();
+            for (String strID: beLongstations){
+                Map<String,TileMapRailOption> mp = mRailOptionMgr.getStationNearTimeTable(strID);
+                for (Map.Entry<String,TileMapRailOption> entry : mp.entrySet()){
+                    TileMapRailOption ioption = entry.getValue();
+                    String out = "下次到站时间:" + ioption.getRailArrTime(station.getStationID()) + "列车方向:" + ioption.getDestination();
 
-                // <com.sjy.widget.MarqueeTextView android:layout_marginTop="10dp" android:layout_height="30dp" android:textSize="18.0sp" android:textColor="@color/theme_blue" android:id="@+id/popview_stationdesc" android:layout_width="match_parent"/>
-                MarqueeTextView mtv = new MarqueeTextView(getContext());
-                mtv.setTextColor(getResources().getColor(R.color.theme_blue));
-                mtv.setTextSize(18);
-                mtv.setSingleLine(true);
-                mtv.setText(out);
-                //LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mtv.getLayoutParams();
-                containerdesc.addView(mtv);
-                bshowview = true;
-                mtv.startFor0();
+                    // <com.sjy.widget.MarqueeTextView android:layout_marginTop="10dp" android:layout_height="30dp" android:textSize="18.0sp" android:textColor="@color/theme_blue" android:id="@+id/popview_stationdesc" android:layout_width="match_parent"/>
+                    MarqueeTextView mtv = new MarqueeTextView(getContext());
+                    mtv.setTextColor(getResources().getColor(R.color.theme_blue));
+                    mtv.setTextSize(18);
+                    mtv.setSingleLine(true);
+                    mtv.setText(out);
+                    //LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mtv.getLayoutParams();
+                    containerdesc.addView(mtv);
+                    bshowview = true;
+                    mtv.startFor0();
+                }
             }
             LinearLayout linearLayout = (LinearLayout) mViewStationInfo.findViewById(R.id.map_popvie_stattiondesc);
             linearLayout.setVisibility(bshowview ? View.VISIBLE : View.GONE);
@@ -261,9 +262,9 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
         }
         TextView tv = (TextView) mViewStationInfo.findViewById(R.id.tile_map_popview_station_name);
         tv.setText(station.getStationName());
-        mTileStationInfo.setTag(station.getStationID());
-        mTileMapStart.setTag(station.getStationID());
-        mTileMapEnd.setTag(station.getStationID());
+        mTileStationInfo.setTag(station);
+        mTileMapStart.setTag(station);
+        mTileMapEnd.setTag(station);
         mPopWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
     }
 
@@ -273,23 +274,27 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
         @Override
         public void onClick(View v) {
             switch (v.getId()){
-                case R.id.tile_map_popview_end:
+                case R.id.tile_map_popview_end:{
                     mPopWindow.dismiss();
                     mPopWindow.setContentView(null);
-                    String endID = (String)v.getTag();
+                    BigMapstationInfo station = (BigMapstationInfo)v.getTag();
+                    String endID = station.getBelongStationIDs().get(0);
                     mRoutPlanMgr.setTerminusStation(endID);
+                }
                     break;
-                case R.id.tile_map_popview_start:
+                case R.id.tile_map_popview_start: {
                     mPopWindow.dismiss();
                     mPopWindow.setContentView(null);
-                    String startID = (String)v.getTag();
+                    BigMapstationInfo station = (BigMapstationInfo) v.getTag();
+                    String startID = station.getBelongStationIDs().get(0);
                     mRoutPlanMgr.setOriginationStation(startID);
+                }
                     break;
                 case R.id.main_map_popview_station_info: {
                     mPopWindow.dismiss();
                     mPopWindow.setContentView(null);
-                    String strStationID = (String)v.getTag();
-                    RouteItemBean it = myApp.findStation(strStationID);
+                    BigMapstationInfo info  = (BigMapstationInfo)v.getTag();
+                    RouteItemBean it = myApp.findStation(info.getBelongStationIDs().get(0));
                     if (it != null){
                         Intent intent = new Intent();
                         //intent.setAction("com.sjy.baseactivity.ShowStationActivity");
@@ -439,9 +444,9 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
             Snackbar.make(mBigImageView,"未找到相关路径",Snackbar.LENGTH_SHORT).show();
         }
         else {
-            mRoutePlanRecyclerAdapter.setBaseData(result);
+            //mRoutePlanRecyclerAdapter.setBaseData(result);
             //mRoutePlanRecyclerAdapter.notifyDataSetChanged();
-            mBottomSheetLayout.showWithSheetView(outView);
+
             mRoutePlanDetailInfo.setVisibility(View.VISIBLE);
 
         }
@@ -452,7 +457,21 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
         mRoutePlanDetailShow.setText(strDetail);
     }
 
+    @Override
+    public void onRouteComputeResults(List<StationPassTime> routeList) {
+        if (routeList.isEmpty()){
+            Snackbar.make(mBigImageView,"未找到相关路径",Snackbar.LENGTH_SHORT).show();
+        }
+        else {
+            //mRoutePlanRecyclerAdapter.setBaseData(result);
+            //mRoutePlanRecyclerAdapter.notifyDataSetChanged();
+            mBottomSheetLayout.showWithSheetView(outView);
+            mRoutePlanDetailInfo.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void InitRoutePlanView(View v){
+
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_routeplant_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).color(ContextCompat.getColor(getContext(), R.color.deep_dark)).size(2).build());

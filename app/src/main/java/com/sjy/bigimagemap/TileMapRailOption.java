@@ -39,7 +39,7 @@ public class TileMapRailOption implements Serializable {
     }
 
     private String routeID;            //路径ID
-    private List<BigMapstationInfo> lsRouteLine; //途径线路
+    private List<String> lsRouteLine; //途径线路
     private int ncurStep = 0;                 //当前步
 
     public String getStrStartTime() {
@@ -62,7 +62,7 @@ public class TileMapRailOption implements Serializable {
 
     private String strEndTime;
     private RailWayTimeTable mRailWayTimeTable;
-    public TileMapRailOption(List<BigMapstationInfo> ls){
+    public TileMapRailOption(List<String> ls){
         lsRouteLine = ls;
     }
 
@@ -110,7 +110,8 @@ public class TileMapRailOption implements Serializable {
         if (ncurStep >= lsRouteLine.size()){
             ncurStep = 0;
         }
-        BigMapstationInfo info = lsRouteLine.get(ncurStep);
+        String strBelongStationID = lsRouteLine.get(ncurStep);
+        BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(strBelongStationID);
         if (mRailOption != null){
             mRailOption.setPoint(new Point((int)info.getDotX(),(int)info.getDotY()));
         }
@@ -119,7 +120,8 @@ public class TileMapRailOption implements Serializable {
 
     public void restoreStep(){
         ncurStep = 0;
-        BigMapstationInfo info = lsRouteLine.get(ncurStep);
+        String strBelongStationID = lsRouteLine.get(ncurStep);
+        BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(strBelongStationID);
         if (mRailOption != null){
             mRailOption.setPoint(new Point((int)info.getDotX(),(int)info.getDotY()));
         }
@@ -138,7 +140,8 @@ public class TileMapRailOption implements Serializable {
     public void initRandomPos(){
         Random ran =new Random(System.currentTimeMillis());
         ncurStep = ran.nextInt(lsRouteLine.size());
-        BigMapstationInfo info = lsRouteLine.get(ncurStep);
+        String strBelongStationID = lsRouteLine.get(ncurStep);
+        BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(strBelongStationID);
         if (mRailOption != null){
             mRailOption.setPoint(new Point((int)info.getDotX(),(int)info.getDotY()));
         }
@@ -164,7 +167,8 @@ public class TileMapRailOption implements Serializable {
 
     public String getCurStationName(){
         String strStation = "";
-        BigMapstationInfo info = lsRouteLine.get(ncurStep);
+        String strBelongStationID = lsRouteLine.get(ncurStep);
+        BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(strBelongStationID);
         if (info != null){
             strStation = info.getStationName();
         }
@@ -173,7 +177,9 @@ public class TileMapRailOption implements Serializable {
 
     public String getCurStationID(){
         String strStation = "";
-        BigMapstationInfo info = lsRouteLine.get(ncurStep);
+        String strBelongStationID = lsRouteLine.get(ncurStep);
+        BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(strBelongStationID);
+
         if (info != null){
             strStation = info.getStationID();
         }
@@ -182,7 +188,8 @@ public class TileMapRailOption implements Serializable {
 
     public String getDestination(){
         String destination = "";
-        BigMapstationInfo info = lsRouteLine.get(lsRouteLine.size() - 1);
+        String strBelongStationID = lsRouteLine.get(lsRouteLine.size() - 1);
+        BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(strBelongStationID);
         destination = info.getStationName();
         return destination;
     }
@@ -210,14 +217,15 @@ public class TileMapRailOption implements Serializable {
         if (ncurStep >= lsRouteLine.size() - 1){
             next = lsRouteLine.size() - 1;
         }
-        BigMapstationInfo info = lsRouteLine.get(next);
-        return info.getStationID();
+        return lsRouteLine.get(next);
     }
 
     public void setRailOptionCurPos(){
         ncurStep = mRailWayTimeTable.getTimeStationStep(System.currentTimeMillis());
-        BigMapstationInfo info = lsRouteLine.get(ncurStep);
-        if (mRailOption != null){
+
+        String strBelongID = lsRouteLine.get(ncurStep);
+        BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(strBelongID);
+        if (mRailOption != null && info != null){
             mRailOption.setPoint(new Point((int)info.getDotX(),(int)info.getDotY()));
         }
     }

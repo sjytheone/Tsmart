@@ -16,8 +16,8 @@ import com.sjy.adapter.OnAdapterItemClickListener;
 import com.sjy.adapter.RailTimeRecyclerAdapter;
 import com.sjy.baseactivity.ShowRailTimeTable;
 import com.sjy.beans.RailItemBean;
+import com.sjy.beans.RailWayLineItem;
 import com.sjy.beans.RailWayTimeTable;
-import com.sjy.beans.RouteLineItemBean;
 import com.sjy.bushelper.MyApp;
 import com.sjy.bushelper.R;
 import com.sjy.divider.HorizontalDividerItemDecoration;
@@ -56,14 +56,15 @@ public class TimeTableFragment extends Fragment implements IFragemDataListener {
     public void InitData(){
         mRailData.clear();
         List<RailWayTimeTable> timeTables = MyApp.theIns().getRailWayTimeTables();
-        List<RouteLineItemBean> routeLines = MyApp.theIns().getAllRouteLine();
-        for (RouteLineItemBean routeItembean : routeLines){
+        //List<RouteLineItemBean> routeLines = MyApp.theIns().getAllRouteLine();
+        List<RailWayLineItem> railWayLines = MyApp.theIns().getRailWayLineItems();
+        for (RailWayLineItem railWayLineItem : railWayLines){
             RailItemBean descItem = new RailItemBean();
-            descItem.setRailID(routeItembean.getStrRouteName());
+            descItem.setRailID(railWayLineItem.getRailWayLineName());
             descItem.setType(RailItemBean.DESCRIBITEMBEAN);
             mRailData.add(descItem);
             for (RailWayTimeTable it : timeTables){
-                if (it.getBelongRouteID().contains(routeItembean.getRouteID())){
+                if (it.getBelongRouteID().contains(railWayLineItem.getRailWayLineID())){
                     RailItemBean bean = new RailItemBean();
                     bean.setRailID(it.getmRailWayTrainID());
                     bean.setRailDesc(it.getTimeDesc());

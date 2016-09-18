@@ -32,15 +32,6 @@ public class FragmentMainContent extends Fragment
     private int[] arrSDrawable = new int[]{R.drawable.map_white_72x72,R.drawable.timeline_white_72x72};
 
     private int mcurIndex = 0;
-    private android.os.Handler mHandler = new android.os.Handler(){
-        public void handleMessage(Message msg) {
-            if (msg.what == 1001){
-                ResetIndicate();
-                int index = msg.arg1;
-                mFunctionBtn.setImageResource(arrSDrawable[index]);
-            }
-        }
-    };
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -95,10 +86,10 @@ public class FragmentMainContent extends Fragment
         bigmapFragment.setArguments(bd);
         mTabs.add(bigmapFragment);
 
-        BDMapRouteFragment bdRouteFragment = BDMapRouteFragment.newInstance();
-        mTabs.add(bdRouteFragment);
+        //BDMapRouteFragment bdRouteFragment = BDMapRouteFragment.newInstance();
+        //mTabs.add(bdRouteFragment);
 
-        mDataListener.add(bdRouteFragment);
+        //mDataListener.add(bdRouteFragment);
 
 
         for (int i = 0 ; i < mTabs.size() ; ++i){
@@ -170,11 +161,8 @@ public class FragmentMainContent extends Fragment
                     strTitle = getResources().getString(R.string.map);
                     break;
             }
-
             mMyToolbar.setTitle(strTitle);
-            Message msg = mHandler.obtainMessage(1001);
-            msg.arg1 = index;
-            mHandler.sendMessage(msg);
+            mFunctionBtn.setImageResource(arrSDrawable[index]);
         }
     }
 

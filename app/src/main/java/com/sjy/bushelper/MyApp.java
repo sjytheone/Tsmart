@@ -3,8 +3,7 @@ package com.sjy.bushelper;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.util.Xml;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -14,16 +13,17 @@ import com.sjy.beans.BigMapstationInfo;
 import com.sjy.beans.RailWayLineItem;
 import com.sjy.beans.RailWayTimeTable;
 import com.sjy.beans.RouteItemBean;
-import com.sjy.beans.RouteLineItemBean;
 import com.sjy.listener.IActivityStatusListener;
-
-import org.xmlpull.v1.XmlPullParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,13 +38,20 @@ public class MyApp extends Application{
     List<BigMapstationInfo> mFlatBigMapStationpos;
     List<RailWayLineItem> mRailWayLineItes;
     List<RailWayTimeTable> mRailWayTimeTables;
+    List<RouteItemBean> mJsonRouteStations = new ArrayList<>();
+
+    //pace 添加全局变量
+    static final public Map<String, String> Stations = new HashMap<>();
+    static final public Map<String, List<String>> TransferStations = new HashMap<>();
+    static final public Map<String, RailWayLineItem> NetTimeTable = new HashMap<>();
+    static final public long transfertime = 180000;//换乘时间
+    //static final public Map<String, String> StationsPic = new HashMap<>();;//换乘时间
+	
+    String mstrCurDateTime;
     private IActivityStatusListener mActivityStatusListener;
 
     static private MyApp ins = null;
-    List<RouteLineItemBean> mAllRouteLine = new ArrayList<>();
-    List<RouteItemBean> mJsonRouteStations = new ArrayList<>();
 
-    private boolean mglobalDataisDone = false;
 
     public static MyApp theIns(){return ins;}
     @Override
@@ -91,100 +98,75 @@ public class MyApp extends Application{
 
     public void InitGlobleData(){
         try {
-            mAllRouteLine = LoadRouteLineJson("routeline_json");
-            mJsonRouteStations = LoadLocalJson("station_json");
-            mFlatBigMapStationpos = LoadBigMapStations_flat("routestation_pos_flat_json");
-            mRailWayLineItes = LoadRailWayLineItems("railway_station_json");
-            mRailWayTimeTables = LoadRailWayTimeTables("railway_train_timetable_json");
+            SimpleDateFormat crsdf =new SimpleDateFormat("yyyy-MM-dd");
+            String strData = crsdf.format(new Date());
+            mstrCurDateTime = strData;
+            //原始的站点信息
+            //mJsonRouteStations = LoadLocalJson("station_json");
+            //大图片上的坐标点
+            long lstart = System.currentTimeMillis();
+            mFlatBigMapStationpos = LoadBigMapStations_flat("net_data/bigmap_stationpos.json");
+            long vl = System.currentTimeMillis() - lstart;
+            Log.d("MyApp","--------mFlatBigMapStationpos time :" + vl);
+            //路线信息，经过的站点
+            lstart = System.currentTimeMillis();
+            mRailWayLineItes = LoadRailWayLineItems("net_data/line_stations.json");
+            vl = System.currentTimeMillis() - lstart;
+            Log.d("MyApp","-----------mRailWayLineItes time :" + vl);
+
+            lstart = System.currentTimeMillis();
+            mRailWayTimeTables = LoadRailWayTimeTables("net_data/train.json");
+            vl = System.currentTimeMillis() - lstart;
+            Log.d("MyApp","-----------mRailWayTimeTables time :" + vl);
+
+            lstart = System.currentTimeMillis();
             processRailWayLineTimeTables();
-            int y = 0;
+
+            //---------全局变量赋值
+            for (RouteItemBean item : mJsonRouteStations) {
+                Stations.put(item.getStrStationID(),item.getStrStationName());
+            }
+            //换乘站
+            TransferStations.put("1005",Arrays.asList("3003"));
+            TransferStations.put("3003",Arrays.asList("1005"));
+            TransferStations.put("1014",Arrays.asList("3012"));
+            TransferStations.put("3012",Arrays.asList("1014"));
+            TransferStations.put("1016",Arrays.asList("2007"));
+            TransferStations.put("2007",Arrays.asList("1016"));
+            TransferStations.put("1027",Arrays.asList("2018","5023"));
+            TransferStations.put("2018",Arrays.asList("1027","5023"));
+            TransferStations.put("5023",Arrays.asList("1027","2018"));
+
+            //时刻表
+            for (RailWayLineItem item : mRailWayLineItes) {
+                NetTimeTable.put(item.getRailWayLineID().substring(5),item);
+            }
+
+//            for(BigMapstationInfo item : mFlatBigMapStationpos)
+//            {
+//                for(String n : Stations.keySet()){
+//                    if(item.getStationName().equals(Stations.get(n)))
+//                        StationsPic.put(item.getStationID(),n);
+//                }
+//            }
+            //--------end全局变量赋值
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mglobalDataisDone = true;
-        //
+
         if (mActivityStatusListener != null){
             mActivityStatusListener.onDataInitFinished();
         }
-    }
-
-
-    public List<RouteLineItemBean> getAllRouteLine(){
-            return mAllRouteLine;
     }
 
     public List<BigMapstationInfo> getBigMapStationPos_flat(){
         return mFlatBigMapStationpos;
     }
 
-    public List<RouteLineItemBean> LoadRouteLine(String strSource) throws Exception {
-        XmlPullParser parser = Xml.newPullParser(); //由android.util.Xml创建一个XmlPullParser实例
-        InputStream is = null;
-        ArrayList<RouteLineItemBean> tables = null;
-        RouteLineItemBean items = null;
-        is = getApplicationContext().getAssets().open("resourcedata/" + strSource);
-        parser.setInput(is, "UTF-8");
-        int eventType = parser.getEventType();
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            switch (eventType) {
-                case XmlPullParser.START_DOCUMENT:
-                    tables = new ArrayList<RouteLineItemBean>();
-                    break;
-                case XmlPullParser.START_TAG:
-                    if (parser.getName().equals("routeline")) {
-                        //  = new Book();
-                        items = new RouteLineItemBean();
-                        items.setStrRouteID(parser.getAttributeValue("", "routeid"));
-                        items.setStrRouteName(parser.getAttributeValue("", "routename"));
-                        items.setStrRouteDesc(parser.getAttributeValue("", "desc"));
-                        items.setStrTime(parser.getAttributeValue("","time"));
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    if (parser.getName().equals("routeline")) {
-                        tables.add(items);
-                    }
-                    break;
-            }
-            eventType = parser.next();
-
-        }
-        return tables;
-    }
-
-
     public List<RouteItemBean> getJsonStations() {return  mJsonRouteStations; }
 
-
-    public List<RouteItemBean> LoadLocalJson(String strJsonPath) throws Exception{
-        InputStream is = getApplicationContext().getAssets().open("resourcedata/" + strJsonPath);
-        String strJson = ConvertStream2Json(is);
-        List<RouteItemBean> lsStations = new ArrayList<>();
-        JSONObject jsonObject = JSON.parseObject(strJson);
-        JSONArray jsonArray = jsonObject.getJSONArray("gd_stations");
-        for (int i = 0 ; i < jsonArray.size() ;++i){
-            JSONObject jsub = jsonArray.getJSONObject(i);
-
-            RouteItemBean ib = new RouteItemBean();
-            ib.setStrStationID(jsub.getString("station_id"));
-            ib.setStrStationName(jsub.getString("station_name"));
-            ib.setLat(jsub.getDouble("lat"));
-            ib.setLon(jsub.getDouble("lon"));
-
-            JSONArray jolder = jsub.getJSONArray("route_older");
-            for (int x = 0 ; x < jolder.size() ;++x){
-                JSONObject odobj = jolder.getJSONObject(x);
-                for (Map.Entry<String, Object> entry : odobj.entrySet()){
-                    String routeID = entry.getKey();
-                    int oder = Integer.parseInt((String) entry.getValue());
-                    ib.AddRouteOder(routeID,oder);
-                }
-            }
-            lsStations.add(ib);
-        }
-
-        return lsStations;
-    }
 
     private static String ConvertStream2Json(InputStream inputStream)
     {
@@ -212,50 +194,8 @@ public class MyApp extends Application{
     }
 
 
-    public List<RouteLineItemBean> LoadRouteLineJson(String strJsonPath) throws Exception{
-        InputStream is = getApplicationContext().getAssets().open("resourcedata/" + strJsonPath);
-        String strJson = ConvertStream2Json(is);
-
-        List<RouteLineItemBean> lsRouteLine = new ArrayList<>();
-        JSONObject jsonObject = JSON.parseObject(strJson);
-        JSONArray jsonArray = jsonObject.getJSONArray("gd_lines");
-        for (int i = 0 ; i < jsonArray.size() ;++i) {
-            JSONObject jsub = jsonArray.getJSONObject(i);
-            RouteLineItemBean rlitem = new RouteLineItemBean();
-            rlitem.setStrRouteID(jsub.getString("route_id"));
-            rlitem.setStrRouteName(jsub.getString("route_name"));
-            rlitem.setStrRouteDesc(jsub.getString("station_desc"));
-            rlitem.setStrTime(jsub.getString("time"));
-            rlitem.setColor(Color.parseColor(jsub.getString("route_descolor")));
-            rlitem.setStrStartTime(jsub.getString("start_time"));
-            rlitem.setStrEndTime(jsub.getString("end_time"));
-            rlitem.setStrStartStation(jsub.getString("start_station"));
-            rlitem.setStrEndStation(jsub.getString("end_station"));
-            JSONArray jolder = jsub.getJSONArray("route_node");
-            for (int x = 0 ; x < jolder.size() ;++x){
-                JSONObject odobj = jolder.getJSONObject(x);
-                double lat = odobj.getDoubleValue("lat");
-                double lon = odobj.getDoubleValue("lon");
-                rlitem.AddRouteLatLng(lat,lon);
-            }
-
-//            JSONArray jpoint = jsub.getJSONArray("route_point");
-//            for (int x = 0 ; x < jpoint.size() ;++x){
-//                JSONObject odobj = jpoint.getJSONObject(x);
-//                int xp = odobj.getIntValue("x");
-//                int yp = odobj.getIntValue("y");
-//                rlitem.AddRoutePoint(xp,yp);
-//            }
-            lsRouteLine.add(rlitem);
-        }
-
-        return lsRouteLine;
-    }
-
-
-
     public List<BigMapstationInfo> LoadBigMapStations_flat(String strJsonPath) throws Exception{
-        InputStream is = getApplicationContext().getAssets().open("resourcedata/" + strJsonPath);
+        InputStream is = getApplicationContext().getAssets().open(strJsonPath);
         String strJson = ConvertStream2Json(is);
 
         List<BigMapstationInfo> lsStationInfo = new ArrayList<>();
@@ -268,17 +208,24 @@ public class MyApp extends Application{
             station.setStationName(jsub.getString("station_name"));
             station.setDotX(jsub.getFloatValue("dotX"));
             station.setDotY(jsub.getFloatValue("dotY"));
+            JSONArray arrayStations = jsub.getJSONArray("line_stations");
+            for (int y = 0 ; y < arrayStations.size() ; ++y) {
+                JSONObject jstation = arrayStations.getJSONObject(y);
+                String strationid = jstation.getString("ID");
+                station.addBelongStationIDs(strationid);
+            }
+
            lsStationInfo.add(station);
         }
         return lsStationInfo;
     }
 
     public List<RailWayLineItem> LoadRailWayLineItems(String strJsonPath) throws Exception{
-        InputStream is = getApplicationContext().getAssets().open("resourcedata/" + strJsonPath);
+        InputStream is = getApplicationContext().getAssets().open(strJsonPath);
         String strJson = ConvertStream2Json(is);
         List<RailWayLineItem> lsRailWayItems = new ArrayList<>();
         JSONObject jsonObject = JSON.parseObject(strJson);
-        JSONArray jsonArray = jsonObject.getJSONArray("gd_stations");
+        JSONArray jsonArray = jsonObject.getJSONArray("line_stations");
         for (int i = 0 ; i < jsonArray.size() ;++i) {
             JSONObject jsub = jsonArray.getJSONObject(i);
             RailWayLineItem items = new RailWayLineItem();
@@ -290,10 +237,16 @@ public class MyApp extends Application{
             for (int y = 0 ; y < arrayStations.size() ; ++y){
                 JSONObject jstation = arrayStations.getJSONObject(y);
                 String strationid = jstation.getString("ID");
+                String strationName = jstation.getString("Name");
                 items.addStation(strationid);
                 if (jstation.getString("Transimition") != null){
                     items.addTransition(strationid,jstation.getString("Transimition"));
                 }
+                RouteItemBean routeItemBean = new RouteItemBean();
+                routeItemBean.setStrStationID(strationid);
+                routeItemBean.setStrStationName(strationName);
+                mJsonRouteStations.add(routeItemBean);
+
             }
             lsRailWayItems.add(items);
         }
@@ -302,7 +255,7 @@ public class MyApp extends Application{
     }
 
     public List<RailWayTimeTable> LoadRailWayTimeTables(String strJsonPath) throws Exception{
-        InputStream is = getApplicationContext().getAssets().open("resourcedata/" + strJsonPath);
+        InputStream is = getApplicationContext().getAssets().open(strJsonPath);
         String strJson = ConvertStream2Json(is);
         List<RailWayTimeTable> lsRailWayTimeTables = new ArrayList<>();
         JSONObject jsonObject = JSON.parseObject(strJson);
@@ -317,7 +270,9 @@ public class MyApp extends Application{
                 JSONObject jstation = trainStations.getJSONObject(y);
                 String passStation = jstation.getString("PassStationID");
                 String ArrTime = jstation.getString("ArrTime");
-                table.AddNode(passStation, ArrTime);
+                String DepTime = jstation.getString("DepTime");
+
+                table.AddNode(passStation, mstrCurDateTime + " " +ArrTime);
             }
             table.ProcessDatas();
             lsRailWayTimeTables.add(table);
@@ -352,15 +307,23 @@ public class MyApp extends Application{
         return null;
     }
 
+    public BigMapstationInfo findBigmapStationByBelongID(String strBelongID){
+        for (BigMapstationInfo info : mFlatBigMapStationpos){
+            List<String> belongsations = info.getBelongStationIDs();
+            for (String strStationID : belongsations){
+                if (strStationID.compareTo(strBelongID) == 0)
+                    return info;
+            }
+        }
+
+        return null;
+    }
+
     public void setActivityStatusListener(IActivityStatusListener listener){
         mActivityStatusListener = listener;
     }
 
-    public boolean getGlobalDataIsDone(){
-        return mglobalDataisDone;
-    }
-
-    public List<RailWayLineItem> getRailWayLineItes(){
+    public List<RailWayLineItem> getRailWayLineItems(){
         return mRailWayLineItes;
     }
 
@@ -400,5 +363,15 @@ public class MyApp extends Application{
             RailWayLineItem line = getLineItem(routeID);
             line.AddRailWayTimeTable(timeTable);
         }
+    }
+
+    //通过站点ID查询站点信息的API
+    public RouteItemBean getRailWayStation(String strStationID){
+        for (RouteItemBean info : mJsonRouteStations){
+            if (info.getStrStationID().compareTo(strStationID) == 0){
+                return info;
+            }
+        }
+        return null;
     }
 }

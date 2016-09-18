@@ -33,6 +33,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
+@SuppressWarnings("ALL")
 public class AboutFragment extends Fragment {
 
     private WebView mWebView;
@@ -110,11 +111,13 @@ public class AboutFragment extends Fragment {
         builder.setView(gridView);
         final AlertDialog dialog = builder.show();
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressWarnings("ConstantConditions")
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
 
                 SPUtils.put(getContext(), getContext().getResources().getString(R.string.change_theme_key), position);
+                //noinspection ConstantConditions,ConstantConditions
                 Snackbar.make(getView(),"主题将在下次启动时生效",Snackbar.LENGTH_SHORT).show();
                 Message msg = new Message();
                 msg.what = Eventenum.EventEn.THEME_CHANGED.getValue();

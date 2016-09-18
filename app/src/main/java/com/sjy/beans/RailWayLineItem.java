@@ -73,17 +73,17 @@ public class RailWayLineItem {
 
     public String getFirstStation(){
         String stationID = mlsStations.get(0);
-        BigMapstationInfo info = MyApp.theIns().findBigmapStation(stationID);
-        if (info != null)
-            return info.getStationName();
+        RouteItemBean item = MyApp.theIns().getRailWayStation(stationID);
+        if (item != null)
+            return item.getStrStationName();
         return null;
     }
 
     public String getLastStation(){
         String stationID = mlsStations.get(mlsStations.size() - 1);
-        BigMapstationInfo info = MyApp.theIns().findBigmapStation(stationID);
-        if (info != null)
-            return info.getStationName();
+        RouteItemBean item = MyApp.theIns().getRailWayStation(stationID);
+        if (item != null)
+            return item.getStrStationName();
         return null;
     }
 

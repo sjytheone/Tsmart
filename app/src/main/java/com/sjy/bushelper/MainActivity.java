@@ -85,7 +85,7 @@ public class MainActivity extends BasicActivity
 
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer);
-		mDrawerLayout.openDrawer(Gravity.LEFT | Gravity.BOTTOM);
+		mDrawerLayout.openDrawer(Gravity.LEFT);
 
 		//mDrawerLayout.setOnDragListener();
 	}
@@ -105,7 +105,6 @@ public class MainActivity extends BasicActivity
 					getSupportFragmentManager().beginTransaction()
 							.hide(mFragmentFunction).show(mFragmentMainContent).commit();
 				}
-				mFragmentMainContent.showIndicate(true);
 				mFragmentMainContent.switchFragment(0);
 			}else {
 //			}else if (pos == 3){

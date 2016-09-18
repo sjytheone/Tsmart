@@ -1,6 +1,7 @@
 package com.sjy.beans;
 
 import com.sjy.bushelper.MyApp;
+import com.sjy.net.StaPassTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,8 @@ public class RailWayTimeTable {
     private String mRailWayTrainID;
     private Map<String,TimeItemBean> mMapStationVTime= new LinkedHashMap<>();
     private MyApp myApp = MyApp.theIns();
+    //pace
+    public  List<StaPassTime> StaTT = new ArrayList<>();
 
     public String getStrStartTime() {
         return strStartTime;
@@ -58,6 +61,24 @@ public class RailWayTimeTable {
     public void AddNode(String stationID,String arrTime){
         TimeItemBean ib = new TimeItemBean(arrTime);
         mMapStationVTime.put(stationID,ib);
+
+        //pace
+        StaPassTime staTemp = new StaPassTime();
+        staTemp.StaCode = stationID;
+        staTemp.StaTime = mMapStationVTime.get(stationID).getMillisTime();
+        StaTT.add(staTemp);
+    }
+
+    //pace
+    public int StaIndex(String staCode)
+    {
+        int temp = -1;
+        for (int i = 0; i < StaTT.size(); i++)
+        {
+            if (StaTT.get(i).StaCode.equals(staCode))
+            { temp = i; break; }
+        }
+        return temp;
     }
 
     public TimeItemBean getArrTime(String stationID){
@@ -169,15 +190,11 @@ public class RailWayTimeTable {
         return false;
     }
 
-    public List<BigMapstationInfo> getPassingStations(){
-        List<BigMapstationInfo> bigInfoList = new ArrayList<>();
+    public List<String> getPassingStations(){
+        List<String> bigInfoList = new ArrayList<>();
         Set<String> keySet = mMapStationVTime.keySet();
         Iterator it = keySet.iterator();
-        while (it.hasNext()){
-            String strStation = (String) it.next();
-            BigMapstationInfo biginfo = myApp.findBigmapStation(strStation);
-            bigInfoList.add(biginfo);
-        }
+        bigInfoList.addAll(keySet);
         return bigInfoList;
     }
 

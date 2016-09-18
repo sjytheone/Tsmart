@@ -33,6 +33,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/map_white_72x72"
                 android:background="@color/nothing"
+                android:visibility="gone"
                 />
 
         </android.support.v7.widget.Toolbar>

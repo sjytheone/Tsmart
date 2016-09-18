@@ -31,10 +31,11 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/_routeadapter_left_Icon"
-                android:layout_width="31dp"
-                android:layout_height="39dp"
-                android:src="@drawable/ic_tab_local_x_sel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_manage"
 
                 />
 

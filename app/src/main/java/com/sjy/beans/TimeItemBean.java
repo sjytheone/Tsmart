@@ -9,15 +9,13 @@ import java.util.Date;
  */
 public class TimeItemBean {
 
-    public TimeItemBean(String strTime){
+    public TimeItemBean(String strTime) {
         //mstrTime = strTime;
-        SimpleDateFormat crsdf =new SimpleDateFormat("yyyy-MM-dd");
-        Date curdate = new Date();
-        String strData = crsdf.format(curdate);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //sdf.set2DigitYearStart(curdate);
         Date df = null;
         try {
-            df = sdf.parse(strData +" " + strTime);
+            df = sdf.parse(strTime);
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,8 @@
 package com.sjy.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/6/15.
@@ -50,6 +52,7 @@ public class BigMapstationInfo implements Serializable{
 
     private boolean bTransmition =false;
 
+    private List<String> mlsBelongStationIDs = new ArrayList<>();
 
 
     public boolean isPointWithin(int x, int y)
@@ -68,4 +71,11 @@ public class BigMapstationInfo implements Serializable{
 //        return (paramInt1 >= this.btnOrgX) && (paramInt1 <= this.btnOrgX + this.btnWidth) && (paramInt2 >= this.btnOrgY) && (paramInt2 <= this.btnOrgY + this.btnHeight);
 //    }
 
+    public void addBelongStationIDs(String stationID){
+        mlsBelongStationIDs.add(stationID);
+    }
+
+    public List<String> getBelongStationIDs(){
+        return mlsBelongStationIDs;
+    }
 }

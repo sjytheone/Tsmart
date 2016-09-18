@@ -225,7 +225,7 @@ public class TileMapRailOption implements Serializable {
 
         String strBelongID = lsRouteLine.get(ncurStep);
         BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(strBelongID);
-        if (mRailOption != null){
+        if (mRailOption != null && info != null){
             mRailOption.setPoint(new Point((int)info.getDotX(),(int)info.getDotY()));
         }
     }

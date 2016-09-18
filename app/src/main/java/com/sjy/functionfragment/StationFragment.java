@@ -14,6 +14,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.sjy.baseactivity.ShowStationActivity;
+import com.sjy.beans.BigMapstationInfo;
 import com.sjy.beans.RailWayLineItem;
 import com.sjy.beans.RouteItemBean;
 import com.sjy.bushelper.MyApp;
@@ -36,7 +37,7 @@ public class StationFragment extends Fragment {
     }
 
     private IndexableListView mIndexableListView;
-    private List<RouteItemBean> mListReal = new ArrayList<>();
+    private List<BigMapstationInfo> mListReal = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +66,8 @@ public class StationFragment extends Fragment {
 
         mListReal.clear();
         List<RouteItemBean> jsonStations = MyApp.theIns().getJsonStations();
-
-        mListReal.addAll(jsonStations);
+        List<BigMapstationInfo> bigMapstationInfos = MyApp.theIns().getBigMapStationPos_flat();
+        mListReal.addAll(bigMapstationInfos);
 
         //List<RouteLineItemBean> routeLine = MyApp.theIns().getAllRouteLine();
         List<RailWayLineItem> railWayLines = MyApp.theIns().getRailWayLineItems();
@@ -96,14 +97,14 @@ public class StationFragment extends Fragment {
     private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            RouteItemBean ib = (RouteItemBean)mListReal.get(position);
+            BigMapstationInfo ib = (BigMapstationInfo)mListReal.get(position);
             Intent intent = new Intent();
             //intent.setAction("com.sjy.baseactivity.ShowStationActivity");
             intent.setClass(getActivity().getApplicationContext(), ShowStationActivity.class);
             Bundle bd = new Bundle();
-            bd.putString("name",ib.getStrStationName());
-            bd.putString("id",ib.getStrStationID());
-            bd.putString("desc",ib.getStationFragmentDes());
+            bd.putString("name",ib.getStationName());
+            bd.putString("id",ib.getStationID());
+            //bd.putString("desc",ib.getStationFragmentDes());
 
             intent.putExtra("information",bd);
             startActivity(intent);
@@ -118,9 +119,9 @@ public class StationFragment extends Fragment {
         }
 
         private String mSections = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private List<RouteItemBean> mDatas;
+        private List<BigMapstationInfo> mDatas;
         private Context mContext;
-        public ContentAdapter(Context context, List<RouteItemBean> objects) {
+        public ContentAdapter(Context context, List<BigMapstationInfo> objects) {
             mContext = context;
             mDatas = objects;
         }
@@ -192,16 +193,16 @@ public class StationFragment extends Fragment {
                 holder = (Holder) convertView.getTag();
             }
 
-            RouteItemBean itemBean = (RouteItemBean) getItem(position);
-            holder.stationName.setText(itemBean.getStrStationName());
+            BigMapstationInfo itemBean = (BigMapstationInfo) getItem(position);
+            holder.stationName.setText(itemBean.getStationName());
             return convertView;
         }
     }
 
     public class PinyinComparator implements Comparator<Object> {
         public int compare(Object o1, Object o2) {
-            char c1 = ((RouteItemBean) o1).getStrStationName().charAt(0);
-            char c2 = ((RouteItemBean) o2).getStrStationName().charAt(0);
+            char c1 = ((BigMapstationInfo) o1).getStationName().charAt(0);
+            char c2 = ((BigMapstationInfo) o2).getStationName().charAt(0);
             return concatPinyinStringArray(
                     PinyinHelper.toHanyuPinyinStringArray(c1)).compareTo(
                     concatPinyinStringArray(PinyinHelper

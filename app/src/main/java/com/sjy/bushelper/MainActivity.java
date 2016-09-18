@@ -105,7 +105,6 @@ public class MainActivity extends BasicActivity
 					getSupportFragmentManager().beginTransaction()
 							.hide(mFragmentFunction).show(mFragmentMainContent).commit();
 				}
-				mFragmentMainContent.showIndicate(true);
 				mFragmentMainContent.switchFragment(0);
 			}else {
 //			}else if (pos == 3){

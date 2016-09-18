@@ -12,8 +12,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
 import com.sjy.adapter.OnAdapterItemClickListener;
 import com.sjy.adapter.RouteRecyclerAdapter;
+import com.sjy.beans.BigMapstationInfo;
 import com.sjy.beans.RailWayLineItem;
 import com.sjy.beans.RailWayTimeTable;
 import com.sjy.beans.RouteItemBean;
@@ -69,6 +71,9 @@ public class ShowDetailRouteActivity extends BasicActivity{
         mDetailView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(R.color.deep_dark).size(2).build());
         mDetailView.setItemAnimator(new DefaultItemAnimator());
 
+        RecyclerViewHeader header = (RecyclerViewHeader)findViewById(R.id.recycler_routeplant_viewheader);
+        header.attachTo(mDetailView);
+
         String strRouteName = "";
         RailWayLineItem itemBean = MyApp.theIns().getLineItem(strRouteID);
         if (itemBean != null){
@@ -123,11 +128,14 @@ public class ShowDetailRouteActivity extends BasicActivity{
                     Intent intent = new Intent();
                     intent.setClass(getApplicationContext(), ShowStationActivity.class);
                     Bundle bd = new Bundle();
-                    bd.putString("name",stationItem.getStrStationName());
-                    bd.putString("id",stationItem.getStrStationID());
-                    bd.putString("desc",stationItem.getStrStationDesc());
-                    intent.putExtra("information",bd);
-                    startActivity(intent);
+                    BigMapstationInfo bigInfo = MyApp.theIns().findBigmapStationByBelongID(stationItem.getStrStationID());
+                    if (bigInfo != null){
+                        bd.putString("name",bigInfo.getStationName());
+                        bd.putString("id",bigInfo.getStationID());
+                        bd.putString("desc",stationItem.getStrStationDesc());
+                        intent.putExtra("information",bd);
+                        startActivity(intent);
+                    }
                 }
             }
         });

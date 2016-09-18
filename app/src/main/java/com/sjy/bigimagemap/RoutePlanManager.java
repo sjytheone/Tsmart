@@ -33,8 +33,6 @@ public class RoutePlanManager {
 
     public interface IRoutePlanListener{
         void onRouteComputerStart();
-        void onRouteComputeResult(List<RoutePlanDetailItem> result);
-        void onRouteComputeDetailResult(String strDetail);
         void onRouteComputeResults(List<StationPassTime> routeList);
     }
 
@@ -67,7 +65,7 @@ public class RoutePlanManager {
     }
 
     public void setOriginationStation(String stationID){
-        BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(stationID);
+        BigMapstationInfo info = MyApp.theIns().findBigmapStation(stationID);
         if (info != null){
             if (isRouteSearching)
                 resetSearchingStatus();
@@ -83,18 +81,20 @@ public class RoutePlanManager {
                 mOriginationOverlay.setPoint(new Point((int) info.getDotX(), (int) info.getDotY()));
             }
             mOriginationOverlay.setStationID(stationID);
+            mOriginationOverlay.setInfo(info);
             mTileMap.invalidate();
 
             if (mTerminusOverlay != null){
-                String terminusID = mTerminusOverlay.getStationID();
+                BigMapstationInfo terminus = mTerminusOverlay.getInfo();
+                AllRouteSearch(info,terminus);
                 //RouteSearch(stationID,terminusID,System.currentTimeMillis());
-                ReturnRoutes(stationID, terminusID, System.currentTimeMillis());
+                //ReturnRoutes(stationID, terminusID, System.currentTimeMillis());
             }
         }
     }
 
     public void setTerminusStation(String stationID){
-        BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(stationID);
+        BigMapstationInfo info = MyApp.theIns().findBigmapStation(stationID);
         if (info != null){
             if (isRouteSearching)
                 resetSearchingStatus();
@@ -110,88 +110,47 @@ public class RoutePlanManager {
                 mTerminusOverlay.setPoint(new Point((int) info.getDotX(), (int) info.getDotY()));
             }
             mTerminusOverlay.setStationID(stationID);
+            mTerminusOverlay.setInfo(info);
             mTileMap.invalidate();
 
             if (mOriginationOverlay != null){
-                String originationID = mOriginationOverlay.getStationID();
+                BigMapstationInfo origination = mOriginationOverlay.getInfo();
                 //RouteSearch(originationID, stationID,System.currentTimeMillis());
 
-                ReturnRoutes(originationID, stationID, System.currentTimeMillis());
+                AllRouteSearch(origination,info);
+                //ReturnRoutes(originationID, stationID, System.currentTimeMillis());
                 //ReturnRoutes(MyApp.StationsPic.get(originationID), MyApp.StationsPic.get(stationID), System.currentTimeMillis());
             }
         }
     }
 
-    public void RouteSearch(String originationID,String terminusID,long lcurTime){
+    public void AllRouteSearch(BigMapstationInfo infoO,BigMapstationInfo infoD){
         isRouteSearching = true;
         if (mRoutePlanListener != null){
             mRoutePlanListener.onRouteComputerStart();
         }
 
-        String strRoutePlanDetail = "";
-        mTileMap.setHighlightOverlay(true);
-        List<RoutePlanDetailItem> resultStations = new ArrayList<>();
-        RailWayLineItem shortLine = myApp.findShortLine(originationID, terminusID);
-        if (shortLine != null){
-
-            RailWayTimeTable railWayTimeTable = shortLine.getNearestTimeTable(originationID,terminusID);
-            if (railWayTimeTable != null){
-                String raiWayID = railWayTimeTable.getmRailWayTrainID();
-                long atEndTime = railWayTimeTable.getArrTime(terminusID).getMillisTime();
-                long spendTime = atEndTime - System.currentTimeMillis();
-                long minutes = (spendTime % (1000 * 60 * 60)) / (1000 * 60);
-                long seconds = (spendTime % (1000 * 60)) / 1000;
-                //String dateStr = hours+":"+minutes+":"+seconds;
-                String strSpendTime = String.format("%02d'%02d''",minutes,seconds);
-                strRoutePlanDetail += "乘坐车次:" + raiWayID + " 到站时间:" + railWayTimeTable.getArrTime(originationID).getstrTime() + "\r\n";
-                strRoutePlanDetail += "总耗时:" + strSpendTime;
-            }
-
-            //railWayTimeTable.ge
-            List<String> sections = shortLine.getStationSections(originationID,terminusID);
-            for (String sid : sections){
-                BigMapstationInfo binfo = MyApp.theIns().findBigmapStation(sid);
-                BigMapFlagDrawOverlay overlay = new BigMapFlagDrawOverlay();
-                RoutePlanDetailItem detailItem = new RoutePlanDetailItem();
-                detailItem.setStrStationID(binfo.getStationID());
-                detailItem.setStrStationName(binfo.getStationName());
-                if (railWayTimeTable != null){
-                    TimeItemBean tmbean = railWayTimeTable.getArrTime(sid);
-                    if (tmbean != null)
-                        detailItem.setStrArrayTime(tmbean.getstrTime());
-                }
-
-                //detailItem.setStrArrayTime(railWayTimeTable.get);
-                Bitmap bmap = MyApp.theIns().getBitmapFromAssets("bigmaps/header_floor_text_56.png");
-                if (sid.compareTo(originationID) == 0){
-                    bmap = MyApp.theIns().getBitmapFromAssets("bigmaps/transit_start_ic.png");
-                }else if (sid.compareTo(terminusID) ==0){
-                    bmap = MyApp.theIns().getBitmapFromAssets("bigmaps/transit_end_ic.png");
-                }
-                overlay.setDrawable(bmap);
-                overlay.setPoint(new Point((int) binfo.getDotX(), (int) binfo.getDotY()));
-                mTileMap.AddNaviOption(overlay);
-                resultStations.add(detailItem);
-                mTileMap.invalidate();
+        allRouteList.clear();
+        long lcurTime = System.currentTimeMillis();
+        List<String> lsO = infoO.getBelongStationIDs();
+        List<String> lsD = infoD.getBelongStationIDs();
+        for (String strOID : lsO){
+            for (String strDID : lsD){
+                ReturnRoutes(strOID,strDID,lcurTime);
+                allRouteList.addAll(routeList);
             }
         }
-        if (mRoutePlanListener != null){
-            mRoutePlanListener.onRouteComputeDetailResult(strRoutePlanDetail);
-            mRoutePlanListener.onRouteComputeResult(resultStations);
-        }
+        //将结果告知外面
+        RoutePlanResultCallBack();
+
     }
-
     private  Map<String, StationPassTime> routeO = new HashMap<>();
     private  Map<String, StationPassTime> routeD = new HashMap<>();
     private  List<StationPassTime> routeList = new ArrayList<>();//结果
+    private  List<StationPassTime> allRouteList = new ArrayList<>(); //所有搜索结果的集合
 
     public void ReturnRoutes(String StaOCode, String StaDCode, long curtime)
     {
-        isRouteSearching = true;
-        if (mRoutePlanListener != null){
-            mRoutePlanListener.onRouteComputerStart();
-        }
-
         SimpleDateFormat crsdf =new SimpleDateFormat("yyyy-MM-dd");
         Date curdate = new Date();
         String strData = crsdf.format(curdate);
@@ -225,8 +184,6 @@ public class RoutePlanManager {
 
         Merge(StaOCode,StaDCode,startTime);
 
-        //将结果告知外面
-        RoutePlanResultCallBack();
     }
 
 
@@ -777,6 +734,9 @@ public class RoutePlanManager {
             }
         }
 
+        //如果routeList为空继续向下执行会导致程序崩溃
+        if (routeList.size() == 0)
+            return;
         //剔除不合理路径
         long costtimemin = routeList.get(0).costtime;
         for(StationPassTime n : routeList){
@@ -794,35 +754,8 @@ public class RoutePlanManager {
     //将结果回掉到外部显示
     public void RoutePlanResultCallBack(){
 
-//        for (String sid : sections){
-//            BigMapstationInfo binfo = MyApp.theIns().findBigmapStation(sid);
-//            BigMapFlagDrawOverlay overlay = new BigMapFlagDrawOverlay();
-//            RoutePlanDetailItem detailItem = new RoutePlanDetailItem();
-//            detailItem.setStrStationID(binfo.getStationID());
-//            detailItem.setStrStationName(binfo.getStationName());
-//            if (railWayTimeTable != null){
-//                TimeItemBean tmbean = railWayTimeTable.getArrTime(sid);
-//                if (tmbean != null)
-//                    detailItem.setStrArrayTime(tmbean.getstrTime());
-//            }
-//
-//            //detailItem.setStrArrayTime(railWayTimeTable.get);
-//            Bitmap bmap = MyApp.theIns().getBitmapFromAssets("bigmaps/header_floor_text_56.png");
-//            if (sid.compareTo(originationID) == 0){
-//                bmap = MyApp.theIns().getBitmapFromAssets("bigmaps/transit_start_ic.png");
-//            }else if (sid.compareTo(terminusID) ==0){
-//                bmap = MyApp.theIns().getBitmapFromAssets("bigmaps/transit_end_ic.png");
-//            }
-//            overlay.setDrawable(bmap);
-//            overlay.setPoint(new Point((int) binfo.getDotX(), (int) binfo.getDotY()));
-//            mTileMap.AddNaviOption(overlay);
-//            resultStations.add(detailItem);
-//            mTileMap.invalidate();
-//        }
-
-
         if (mRoutePlanListener != null){
-            mRoutePlanListener.onRouteComputeResults(routeList);
+            mRoutePlanListener.onRouteComputeResults(allRouteList);
         }
 
 

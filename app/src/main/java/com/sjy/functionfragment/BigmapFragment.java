@@ -5,12 +5,10 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,18 +21,14 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.ImageViewState;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.flipboard.bottomsheet.BottomSheetLayout;
-import com.sjy.adapter.RoutePlanRecyclerAdapter;
 import com.sjy.baseactivity.SearchActivity;
 import com.sjy.baseactivity.ShowRailTimeTable;
 import com.sjy.baseactivity.ShowStationActivity;
 import com.sjy.beans.BigMapstationInfo;
-import com.sjy.beans.RouteItemBean;
-import com.sjy.beans.RoutePlanDetailItem;
 import com.sjy.bigimagemap.BigMapDrawOverlay;
 import com.sjy.bigimagemap.BigTileMap;
 import com.sjy.bigimagemap.ITileMapNotify;
@@ -43,12 +37,14 @@ import com.sjy.bigimagemap.RoutePlanManager;
 import com.sjy.bigimagemap.TileMapRailOption;
 import com.sjy.bushelper.MyApp;
 import com.sjy.bushelper.R;
-import com.sjy.divider.HorizontalDividerItemDecoration;
 import com.sjy.listener.IFragemDataListener;
 import com.sjy.listener.IRailItemMoveListener;
 import com.sjy.net.StationPassTime;
 import com.sjy.widget.MarqueeTextView;
+import com.sjy.widget.RecyclerRouteView;
+import com.sjy.widget.TabLayoutFrame;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,14 +71,10 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
     private int tileMapMode = BigTileMap.TileMapMode.NORMAL.ordinal();
     //private SlideBottomPanel mSlideBottomPlanel = null;
     private BottomSheetLayout mBottomSheetLayout = null;
-    private LinearLayout mRoutePlanDetailInfo = null;
+    private ImageView mDetailImageView = null;
 
-
-    private View outView;
-    //BottomSheetFragment
-    private RecyclerView mRecyclerView;
-    private RoutePlanRecyclerAdapter mRoutePlanRecyclerAdapter;
-    private TextView mRoutePlanDetailShow;
+    private TabLayoutFrame mTabLayoutFrame;
+    BottomSheetBehavior mBottomSheetBehavior;
 
 
     @Override
@@ -107,44 +99,47 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        //View v = inflater.inflate(R.layout.bigmap_routeplanfragment, container, false);
         View v = inflater.inflate(R.layout.fragment_bigmap, container, false);
 
         mBigImageView = (BigTileMap)v.findViewById(R.id.bigmap_ImageView);
         InitMapView(mBigImageView);
 
         mBottomSheetLayout = (BottomSheetLayout) v.findViewById(R.id.bigmap_bottomSheetLayout);
-        mBottomSheetLayout.setShouldDimContentView(false);
+        mBottomSheetLayout.setShouldDimContentView(true);
 
-        outView = LayoutInflater.from(getContext()).inflate(R.layout.routeplant_shower, mBottomSheetLayout, false);
-        //InitRoutePlanView(outView);
+        //mBottomSheetLayout.seton
+        //mPlanDisplayer = LayoutInflater.from(getContext()).inflate(R.layout.routeplant_shower, mBottomSheetLayout, false);
+        //InitPlanDisplayer();
+        //mTabLayoutFrame = TabLayoutFrame.createInstance(mBottomSheetLayout);
 
-        mRoutePlanDetailInfo = (LinearLayout) v.findViewById(R.id._routeplan_showdetail_);
-        mRoutePlanDetailInfo.setClickable(true);
-        mRoutePlanDetailInfo.setOnClickListener(mClickListener);
-        mRoutePlanDetailInfo.setOnTouchListener(myTouchListener);
-        mRoutePlanDetailInfo.setVisibility(View.GONE);
+        //LinearLayout bottomSheetViewgroup = (LinearLayout) v.findViewById(R.id.bottom_sheet);
+
+        //FrameLayout frameLayout = (FrameLayout) v.findViewById(R.id.tabLayout_container);
+
+
+        mTabLayoutFrame = new TabLayoutFrame(getContext(),getFragmentManager(),mBottomSheetLayout);
+
+        mDetailImageView = (ImageView) v.findViewById(R.id.detailImageview);
+        mDetailImageView.setClickable(true);
+        mDetailImageView.setOnTouchListener(myTouchListener);
+        mDetailImageView.setOnClickListener(mClickListener);
 
         mRoutPlanMgr = new RoutePlanManager(mBigImageView);
 
         if (tileMapMode == BigTileMap.TileMapMode.GRID.ordinal()) {
             mRoutPlanMgr.setRoutePlanListener(this);
-        }
-
-        ImageView imgVie = (ImageView) v.findViewById(R.id.tile_maplayer);
-        imgVie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean bShow = mBigImageView.isShowRailOptions();
-                mBigImageView.setShowRailOptions(!bShow);
-            }
-        });
-
-
-        if (tileMapMode != BigTileMap.TileMapMode.GRID.ordinal()) {
+        }else {
+            ImageView imgVie = (ImageView) v.findViewById(R.id.tile_maplayer);
+            imgVie.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean bShow = mBigImageView.isShowRailOptions();
+                    mBigImageView.setShowRailOptions(!bShow);
+                }
+            });
             mRailOptionMgr.setTileMap(mBigImageView);
             mRailOptionMgr.setRailItemMoveListener(BigmapFragment.this);
-
-
             mRailOptionMgr.startRailDataProcess();
         }
 
@@ -242,7 +237,7 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
                 Map<String,TileMapRailOption> mp = mRailOptionMgr.getStationNearTimeTable(strID);
                 for (Map.Entry<String,TileMapRailOption> entry : mp.entrySet()){
                     TileMapRailOption ioption = entry.getValue();
-                    String out = "下次到站时间:" + ioption.getRailArrTime(station.getStationID()) + "列车方向:" + ioption.getDestination();
+                    String out = "下次到站时间:" + ioption.getRailArrTime(strID) + "列车方向:" + ioption.getDestination();
 
                     // <com.sjy.widget.MarqueeTextView android:layout_marginTop="10dp" android:layout_height="30dp" android:textSize="18.0sp" android:textColor="@color/theme_blue" android:id="@+id/popview_stationdesc" android:layout_width="match_parent"/>
                     MarqueeTextView mtv = new MarqueeTextView(getContext());
@@ -278,31 +273,31 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
                     mPopWindow.dismiss();
                     mPopWindow.setContentView(null);
                     BigMapstationInfo station = (BigMapstationInfo)v.getTag();
-                    String endID = station.getBelongStationIDs().get(0);
-                    mRoutPlanMgr.setTerminusStation(endID);
+                    //String endID = station.getBelongStationIDs().get(0);
+                    mRoutPlanMgr.setTerminusStation(station.getStationID());
                 }
                     break;
                 case R.id.tile_map_popview_start: {
                     mPopWindow.dismiss();
                     mPopWindow.setContentView(null);
                     BigMapstationInfo station = (BigMapstationInfo) v.getTag();
-                    String startID = station.getBelongStationIDs().get(0);
-                    mRoutPlanMgr.setOriginationStation(startID);
+                    //String startID = station.getBelongStationIDs().get(0);
+                    mRoutPlanMgr.setOriginationStation(station.getStationID());
                 }
                     break;
                 case R.id.main_map_popview_station_info: {
                     mPopWindow.dismiss();
                     mPopWindow.setContentView(null);
                     BigMapstationInfo info  = (BigMapstationInfo)v.getTag();
-                    RouteItemBean it = myApp.findStation(info.getBelongStationIDs().get(0));
-                    if (it != null){
+                    //RouteItemBean it = myApp.findStation(info.getBelongStationIDs().get(0));
+                    if (info != null){
                         Intent intent = new Intent();
                         //intent.setAction("com.sjy.baseactivity.ShowStationActivity");
                         intent.setClass(getActivity().getApplicationContext(), ShowStationActivity.class);
                         Bundle bd = new Bundle();
-                        bd.putString("name", it.getStrStationName());
-                        bd.putString("id", it.getStrStationID());
-                        bd.putString("desc", it.getStationFragmentDes());
+                        bd.putString("name", info.getStationName());
+                        bd.putString("id", info.getStationID());
+                        //bd.putString("desc", info.ge.getStationFragmentDes());
                         intent.putExtra("information", bd);
                         startActivity(intent);
                     }
@@ -321,11 +316,11 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
                     startActivity(itent);
                 }
                 break;
-                case R.id._routeplan_showdetail_: {
+                case R.id.detailImageview: {
                     if (mBottomSheetLayout.isSheetShowing()){
                         mBottomSheetLayout.dismissSheet();
                     }else {
-                        mBottomSheetLayout.showWithSheetView(outView);
+                        mBottomSheetLayout.showWithSheetView(mTabLayoutFrame);
                     }
                 }
                 break;
@@ -425,7 +420,9 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
         if (tileMapMode == BigTileMap.TileMapMode.GRID.ordinal()){
             if (mRoutPlanMgr.getRouteSearching()){
                 mRoutPlanMgr.resetSearchingStatus();
-                mRoutePlanDetailInfo.setVisibility(View.GONE);
+                mDetailImageView.setVisibility(View.GONE);
+                if (mBottomSheetLayout.isSheetShowing())
+                    mBottomSheetLayout.dismissSheet();
                 return true;
             }
         }
@@ -438,23 +435,32 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
     }
 
     @Override
-    public void onRouteComputeResult(List<RoutePlanDetailItem> result) {
-
-        if (result.isEmpty()){
-            Snackbar.make(mBigImageView,"未找到相关路径",Snackbar.LENGTH_SHORT).show();
-        }
-        else {
-            //mRoutePlanRecyclerAdapter.setBaseData(result);
-            //mRoutePlanRecyclerAdapter.notifyDataSetChanged();
-
-            mRoutePlanDetailInfo.setVisibility(View.VISIBLE);
-
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden){
+            if (mBottomSheetLayout != null && mBottomSheetLayout.isSheetShowing()) {
+                mBottomSheetLayout.dismissSheet();
+            }
         }
     }
 
     @Override
-    public void onRouteComputeDetailResult(String strDetail) {
-        mRoutePlanDetailShow.setText(strDetail);
+    public void onResume() {
+        super.onResume();
+
+        if (tileMapMode != BigTileMap.TileMapMode.GRID.ordinal()) {
+            if (mRailOptionMgr != null)
+                mRailOptionMgr.startRailDataProcess();
+        }
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (tileMapMode != BigTileMap.TileMapMode.GRID.ordinal()) {
+            if (mRailOptionMgr != null)
+                mRailOptionMgr.startRailDataProcess();
+        }
     }
 
     @Override
@@ -463,25 +469,21 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
             Snackbar.make(mBigImageView,"未找到相关路径",Snackbar.LENGTH_SHORT).show();
         }
         else {
-            //mRoutePlanRecyclerAdapter.setBaseData(result);
-            //mRoutePlanRecyclerAdapter.notifyDataSetChanged();
-            mBottomSheetLayout.showWithSheetView(outView);
-            mRoutePlanDetailInfo.setVisibility(View.VISIBLE);
+
+            //mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            List<RecyclerRouteView> lsFragment = new ArrayList<>();
+            for (StationPassTime stationTime : routeList){
+                RecyclerRouteView view = new RecyclerRouteView();
+                view.setStationPassTime(stationTime);
+                view.setTileMap(mBigImageView);
+                lsFragment.add(view);
+            }
+
+            mTabLayoutFrame.setFragmentList(lsFragment);
+            mBottomSheetLayout.showWithSheetView(mTabLayoutFrame);
+            mDetailImageView.setVisibility(View.VISIBLE);
         }
-    }
-
-    public void InitRoutePlanView(View v){
-
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_routeplant_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).color(ContextCompat.getColor(getContext(), R.color.deep_dark)).size(2).build());
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        RecyclerViewHeader header = (RecyclerViewHeader)v.findViewById(R.id.recycler_routeplant_viewheader);
-        header.attachTo(mRecyclerView);
-        mRoutePlanDetailShow = (TextView) v.findViewById(R.id.recycler_routeplantdetailshow);
-        mRoutePlanRecyclerAdapter = new RoutePlanRecyclerAdapter(null,getContext());
-        mRecyclerView.setAdapter(mRoutePlanRecyclerAdapter);
-        //mRoutePlanRecyclerAdapter.setBaseData(mStationPoslist);
     }
 
     @Override
@@ -499,4 +501,5 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
         }
         return true;
     }
+
 }

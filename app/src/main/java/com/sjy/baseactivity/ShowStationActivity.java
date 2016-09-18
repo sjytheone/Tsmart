@@ -13,10 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
 import com.sjy.adapter.OnAdapterItemClickListener;
 import com.sjy.adapter.RailTimeAdapter;
 import com.sjy.adapter.RailTimeRecyclerAdapter;
 import com.sjy.adapter.RouteRecyclerAdapter;
+import com.sjy.beans.BigMapstationInfo;
 import com.sjy.beans.RailItemBean;
 import com.sjy.beans.RailWayTimeTable;
 import com.sjy.beans.RouteItemBean;
@@ -76,6 +78,8 @@ public class ShowStationActivity extends BasicActivity implements View.OnClickLi
         mRailRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(R.color.deep_dark).size(2).build());
         mRailRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        RecyclerViewHeader header = (RecyclerViewHeader)findViewById(R.id.recycler_routeplant_viewheader);
+        header.attachTo(mRailRecyclerView);
         //mStationEdit.setText(bd.getString("desc"));
         String strName = bd.getString("name");
         String strDesc1 = bd.getString("desc");
@@ -97,25 +101,33 @@ public class ShowStationActivity extends BasicActivity implements View.OnClickLi
         }
 
         String strID = bd.getString("id");
-        List<RailWayTimeTable> railTimeTable = MyApp.theIns().getRailWayTimeTables();
-        Map<String,TimeItemBean> mp = null;
-        for (RailWayTimeTable item : railTimeTable){
-            mp = item.getStationVtimeMap();
-            for (Map.Entry<String,TimeItemBean> entry : mp.entrySet()){
-                if (entry.getKey().compareTo(strID) == 0){
-                    RailItemBean railItem = new RailItemBean();
-                    railItem.setRailID(item.getmRailWayTrainID());
-                    String strDestination = item.getDestinationID();
-                    RouteItemBean statinon = MyApp.theIns().findStation(strDestination);
-                    String strDesc = "到站时间:" + entry.getValue().getstrTime();
-                    if (statinon != null)
-                        strDesc += " 列车开往:" + statinon.getStrStationName();
-                    railItem.setRailDesc(strDesc);
-                    railItem.setMilisortTimes(entry.getValue().getMillisTime());
-                    mlsData.add(railItem);
+        BigMapstationInfo bigmapInfo = MyApp.theIns().findBigmapStation(strID);
+        if (bigmapInfo != null){
+            List<String> lsBelongstations = bigmapInfo.getBelongStationIDs();
+            for (String id : lsBelongstations){
+                List<RailWayTimeTable> railTimeTable = MyApp.theIns().getRailWayTimeTables();
+                Map<String,TimeItemBean> mp = null;
+                for (RailWayTimeTable item : railTimeTable){
+                    mp = item.getStationVtimeMap();
+                    for (Map.Entry<String,TimeItemBean> entry : mp.entrySet()){
+                        if (entry.getKey().compareTo(id) == 0){
+                            RailItemBean railItem = new RailItemBean();
+                            railItem.setRailID(item.getmRailWayTrainID());
+                            String strDestination = item.getDestinationID();
+                            RouteItemBean statinon = MyApp.theIns().findStation(strDestination);
+                            String strDesc = "到站时间:" + entry.getValue().getstrTime();
+                            if (statinon != null)
+                                strDesc += " 列车开往:" + statinon.getStrStationName();
+                            railItem.setRailDesc(strDesc);
+                            railItem.setMilisortTimes(entry.getValue().getMillisTime());
+                            mlsData.add(railItem);
+                        }
+                    }
                 }
             }
+
         }
+
 
         Collections.sort(mlsData, new MiliTimeComparator());
 

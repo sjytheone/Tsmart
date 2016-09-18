@@ -2,13 +2,14 @@ package com.sjy.net;
 
 import com.sjy.bushelper.MyApp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/9/5.
  */
-public class StationPassTime {
+public class StationPassTime implements Serializable{
     public String routecode;
     public long costtime;
     public long lastboardingtime;

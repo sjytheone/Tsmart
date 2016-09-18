@@ -45,7 +45,7 @@ public class MyApp extends Application{
     static final public Map<String, List<String>> TransferStations = new HashMap<>();
     static final public Map<String, RailWayLineItem> NetTimeTable = new HashMap<>();
     static final public long transfertime = 180000;//换乘时间
-    static final public Map<String, String> StationsPic = new HashMap<>();;//换乘时间
+    //static final public Map<String, String> StationsPic = new HashMap<>();;//换乘时间
 	
     String mstrCurDateTime;
     private IActivityStatusListener mActivityStatusListener;
@@ -142,13 +142,13 @@ public class MyApp extends Application{
                 NetTimeTable.put(item.getRailWayLineID().substring(5),item);
             }
 
-            for(BigMapstationInfo item : mFlatBigMapStationpos)
-            {
-                for(String n : Stations.keySet()){
-                    if(item.getStationName().equals(Stations.get(n)))
-                        StationsPic.put(item.getStationID(),n);
-                }
-            }
+//            for(BigMapstationInfo item : mFlatBigMapStationpos)
+//            {
+//                for(String n : Stations.keySet()){
+//                    if(item.getStationName().equals(Stations.get(n)))
+//                        StationsPic.put(item.getStationID(),n);
+//                }
+//            }
             //--------end全局变量赋值
 
 

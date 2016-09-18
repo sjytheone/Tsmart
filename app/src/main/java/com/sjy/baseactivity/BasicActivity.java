@@ -1,10 +1,13 @@
 package com.sjy.baseactivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
 
+import com.sjy.bushelper.R;
 import com.sjy.utils.ThemeUtils;
 
 /**
@@ -15,6 +18,7 @@ public class BasicActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initTheme();
+        setUpAnimations();
         super.onCreate(savedInstanceState);
 
     }
@@ -35,5 +39,14 @@ public class BasicActivity extends AppCompatActivity {
             overridePendingTransition(0, 0);
         }
         startActivity(intent);
+    }
+
+    protected void setUpAnimations(){
+        Fade fade = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.fade_activity);
+        //Fade fade = TransitionInflater.from(this).inflateTransition(R.transition.fade_activity);
+        //getWindow().setEnterTransition(fade);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(fade);
+        }
     }
 }

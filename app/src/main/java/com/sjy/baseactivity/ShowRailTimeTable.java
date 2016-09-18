@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
 import com.sjy.adapter.OnAdapterItemClickListener;
 import com.sjy.adapter.RouteRecyclerAdapter;
 import com.sjy.beans.BigMapstationInfo;
@@ -76,6 +77,23 @@ public class ShowRailTimeTable extends BasicActivity {
         String strRailID = bd.getString("strID");
         String strDesc = bd.getString("strDesc");
 
+        mDetailView = (RecyclerView) findViewById(R.id.activity_recyclerDetail);
+        mDetailView.setLayoutManager(new LinearLayoutManager(this));
+        mDetailView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(R.color.deep_dark).size(2).build());
+        mDetailView.setItemAnimator(new DefaultItemAnimator());
+
+        RecyclerViewHeader header = (RecyclerViewHeader)findViewById(R.id.recycler_routeplant_viewheader);
+        header.attachTo(mDetailView);
+
+        mDetailView.setOnFlingListener(new RecyclerView.OnFlingListener() {
+            @Override
+            public boolean onFling(int velocityX, int velocityY) {
+                return false;
+            }
+        });
+        header.getVisibility();
+
+        //mRoutePlanDetailShow = (TextView)findViewById(R.id.recycler_routeplantdetailshow);
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id._detailtext_container);
         linearLayout.removeAllViews();
         TextView tvName = new TextView(getApplicationContext());
@@ -92,10 +110,6 @@ public class ShowRailTimeTable extends BasicActivity {
             linearLayout.addView(tvDesc);
         }
 
-        mDetailView = (RecyclerView) findViewById(R.id.activity_recyclerDetail);
-        mDetailView.setLayoutManager(new LinearLayoutManager(this));
-        mDetailView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(R.color.deep_dark).size(2).build());
-        mDetailView.setItemAnimator(new DefaultItemAnimator());
 
         List<RailWayTimeTable> timeTables = MyApp.theIns().getRailWayTimeTables();
         List<RouteItemBean> allStations = MyApp.theIns().getJsonStations();
@@ -138,14 +152,17 @@ public class ShowRailTimeTable extends BasicActivity {
                 RouteItemBean ib = (RouteItemBean) mRouteData.get(postion);
                 Intent intent = new Intent();
                 //intent.setAction("com.sjy.baseactivity.ShowStationActivity");
-                intent.setClass(getApplicationContext(), ShowStationActivity.class);
-                Bundle bd = new Bundle();
-                bd.putString("name", ib.getStrStationName());
-                bd.putString("id", ib.getStrStationID());
-                Bundle info = getIntent().getBundleExtra("information");
-                bd.putString("desc", ib.getStationFragmentDes());
-                intent.putExtra("information", bd);
-                startActivity(intent);
+                BigMapstationInfo stationinfo = MyApp.theIns().findBigmapStationByBelongID(ib.getStrStationID());
+                if (stationinfo !=null){
+                    intent.setClass(getApplicationContext(), ShowStationActivity.class);
+                    Bundle bd = new Bundle();
+                    bd.putString("name", stationinfo.getStationName());
+                    bd.putString("id", stationinfo.getStationID());
+                    Bundle info = getIntent().getBundleExtra("information");
+                    bd.putString("desc", ib.getStationFragmentDes());
+                    intent.putExtra("information", bd);
+                    startActivity(intent);
+                }
             }
         });
 

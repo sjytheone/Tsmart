@@ -38,3 +38,7 @@ captures/
 
 # Keystore files
 *.jks
+app/src/main/java/com/sjy/baseactivity/ShowRailTimeTable.java
+app/src/main/java/com/sjy/baseactivity/ShowRailTimeTable.java
+app/src/main/java/com/sjy/bushelper/MyApp.java
+*.java

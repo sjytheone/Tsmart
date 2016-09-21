@@ -9,8 +9,10 @@
         android:orientation="horizontal">
 
         <RelativeLayout android:id="@+id/main_map_popview_tile" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10.0dip">
-            <ImageView android:src="@drawable/tailwayicon" android:id="@+id/main_map_popview_line_icon" android:layout_width="30dp" android:layout_height="30.0dip" android:layout_alignParentLeft="true" android:layout_centerVertical="true" />
-            <TextView android:textSize="18.0sp" android:textStyle="bold" android:text="车次" android:textColor="@color/black" android:id="@+id/layout_tilemap_railid" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_toRightOf="@id/main_map_popview_line_icon" android:layout_centerVertical="true" />
+            <ImageView android:src="@drawable/ic_directions_transit_black_24dp" android:id="@+id/main_map_popview_line_icon" android:layout_width="27dp" android:layout_height="27.0dip" android:layout_alignParentLeft="true" android:layout_centerVertical="true"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"/>
+            <TextView android:textSize="20.0sp" android:textStyle="bold" android:text="车次" android:textColor="@color/black" android:id="@+id/layout_tilemap_railid" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_toRightOf="@id/main_map_popview_line_icon" android:layout_centerVertical="true" />
         </RelativeLayout>
     </LinearLayout>
     <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="40.0dip" android:layout_marginTop="10.0dip">
@@ -73,12 +75,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-        <com.sjy.widget.MarqueeTextView android:layout_marginTop="10dp" android:layout_height="38dp" android:textSize="18.0sp" android:textColor="@color/theme_blue" android:gravity="left" android:id="@+id/railinfo_currentstaion" android:layout_width="fill_parent" android:text="当前站点"
+        <com.sjy.widget.MarqueeTextView android:layout_marginTop="10dp" android:layout_height="38dp" android:textSize="18.0sp" android:textColor="?attr/colorPrimary" android:gravity="left" android:id="@+id/railinfo_currentstaion" android:layout_width="fill_parent" android:text="当前站点"
             android:singleLine="true" android:ellipsize="marquee"
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             />
-        <com.sjy.widget.MarqueeTextView android:layout_height="38dp" android:textSize="18sp" android:textColor="@color/theme_blue" android:gravity="left" android:id="@+id/railinfo_leavingtime" android:layout_width="fill_parent" android:text="当前站点" android:singleLine="true" android:ellipsize="marquee"
+        <com.sjy.widget.MarqueeTextView android:layout_height="38dp" android:textSize="18sp" android:textColor="?attr/colorPrimary" android:gravity="left" android:id="@+id/railinfo_leavingtime" android:layout_width="fill_parent" android:text="当前站点" android:singleLine="true" android:ellipsize="marquee"
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             />

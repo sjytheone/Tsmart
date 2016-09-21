@@ -29,7 +29,7 @@ public class FragmentMainContent extends Fragment
     private Toolbar mMyToolbar;
     private IToolbarHelper mToolbarHelper;
 
-    private int[] arrSDrawable = new int[]{R.drawable.map_white_72x72,R.drawable.timeline_white_72x72};
+    private int[] arrSDrawable = new int[]{R.drawable.ic_map_black_24dp,R.drawable.ic_route_24dp};
 
     private int mcurIndex = 0;
 

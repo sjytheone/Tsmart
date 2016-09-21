@@ -99,6 +99,7 @@
         <activity android:name="com.sjy.baseactivity.ShowStationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlueTheme"
+            android:launchMode="singleTask"
             >
             <intent-filter>
                 <action android:name="com.sjy.baseactivity.ShowStationActivity" />
@@ -109,6 +110,7 @@
         <activity android:name="com.sjy.baseactivity.ShowRailTimeTable"
             android:screenOrientation="portrait"
             android:theme="@style/BlueTheme"
+            android:launchMode="singleTask"
             >
             <intent-filter>
                 <action android:name="com.sjy.baseactivity.ShowRailTimeTable" />
@@ -118,9 +120,19 @@
         <activity android:name="com.sjy.baseactivity.ShowDetailRouteActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlueTheme"
+            android:launchMode="singleTask"
             >
             <intent-filter>
                 <action android:name="com.sjy.baseactivity.ShowDetailRouteActivity" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.sjy.baseactivity.ShowDetailTimeTableActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlueTheme"
+            android:launchMode="singleTask"
+            >
+            <intent-filter>
+                <action android:name="com.sjy.baseactivity.ShowDetailTimeTableActivity" />
             </intent-filter>
         </activity>
         <activity android:name="com.sjy.baseactivity.SearchActivity"

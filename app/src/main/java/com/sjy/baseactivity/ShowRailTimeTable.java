@@ -49,7 +49,15 @@ public class ShowRailTimeTable extends BasicActivity {
         super.onCreate(savedInstanceState);
         //setContentView();
         setContentView(R.layout.showdetail_activity);
-        InitView();
+        Bundle bd = getIntent().getBundleExtra("information");
+        InitView(bd);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle bd = intent.getBundleExtra("information");
+        InitView(bd);
     }
 
     @Override
@@ -57,7 +65,7 @@ public class ShowRailTimeTable extends BasicActivity {
         super.onDestroy();
     }
 
-    public void InitView(){
+    public void InitView(Bundle bd){
         Toolbar tb = (Toolbar)findViewById(R.id.tb_functiontoolbar);
         tb.setTitleTextColor(getResources().getColor(R.color.theme_white));
         setSupportActionBar(tb);
@@ -73,7 +81,6 @@ public class ShowRailTimeTable extends BasicActivity {
         getSupportActionBar().setTitle("");
 
 
-        Bundle bd = getIntent().getBundleExtra("information");
         String strRailID = bd.getString("strID");
         String strDesc = bd.getString("strDesc");
 

@@ -105,7 +105,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
 
     public class RouteHolder extends RecyclerView.ViewHolder{
         ImageView leftIcon;
-        ImageView rightIcon;
         TextView stationName;
         TextView  description;
         LinearLayout layoutComming;
@@ -116,7 +115,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
             super(itemView);
 
             leftIcon = (ImageView) itemView.findViewById(R.id._routeadapter_left_Icon);
-            rightIcon = (ImageView) itemView.findViewById(R.id._routeadapter_right_Icon);
             stationName = (TextView) itemView.findViewById(R.id._routeadapter_station_tv);
             description = (TextView) itemView.findViewById(R.id._routeadapter_descrip_tv);
             layoutComming = (LinearLayout) itemView.findViewById(R.id._comming_layout);

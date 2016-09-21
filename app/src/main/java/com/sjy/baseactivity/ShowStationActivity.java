@@ -46,17 +46,19 @@ public class ShowStationActivity extends BasicActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.showdetail_activity);
-        InitView();
+        Bundle bd = getIntent().getBundleExtra("information");
+        InitView(bd);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle bd = intent.getBundleExtra("information");
+        InitView(bd);
+    }
 
+    protected void InitView(Bundle bd){
 
-    protected void InitView(){
-
-        Bundle bd = getIntent().getBundleExtra("information");
-        //bd.putString("name", strName);
-        //bd.putString("id", strID);
-        //getIntent().getExtras();
         Toolbar tb = (Toolbar)findViewById(R.id.tb_functiontoolbar);
         tb.setTitleTextColor(getResources().getColor(R.color.theme_white));
         setSupportActionBar(tb);

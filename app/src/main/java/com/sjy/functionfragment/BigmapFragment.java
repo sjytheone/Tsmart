@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -241,7 +242,10 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
 
                     // <com.sjy.widget.MarqueeTextView android:layout_marginTop="10dp" android:layout_height="30dp" android:textSize="18.0sp" android:textColor="@color/theme_blue" android:id="@+id/popview_stationdesc" android:layout_width="match_parent"/>
                     MarqueeTextView mtv = new MarqueeTextView(getContext());
-                    mtv.setTextColor(getResources().getColor(R.color.theme_blue));
+                    TypedValue typedValue = new  TypedValue();
+                    getContext().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                    int textcolor = typedValue.data;
+                    mtv.setTextColor(textcolor);
                     mtv.setTextSize(18);
                     mtv.setSingleLine(true);
                     mtv.setText(out);

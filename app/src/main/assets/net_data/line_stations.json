@@ -2,7 +2,7 @@
   "line_stations": [
     {
       "LineName": "route1",
-      "route_name":"地轨1号线",
+      "route_name":"有轨电车1号线",
       "first_railway":"5:26",
       "last_railway":"22:20",
       "Stations": [
@@ -118,7 +118,7 @@
     },
     {
       "LineName": "route2",
-      "route_name":"地轨2号线",
+      "route_name":"有轨电车2号线",
       "first_railway":"5:30",
       "last_railway":"23:01",
       "Stations": [
@@ -198,7 +198,7 @@
     },
     {
       "LineName": "route3",
-      "route_name":"地轨3号线",
+      "route_name":"有轨电车3号线",
       "first_railway":"5:48",
       "last_railway":"21:35",
       "Stations": [
@@ -266,7 +266,7 @@
     },
     {
       "LineName": "route5",
-      "route_name":"地轨5号线",
+      "route_name":"有轨电车5号线",
       "first_railway":"5:35",
       "last_railway":"21:15",
       "Stations": [

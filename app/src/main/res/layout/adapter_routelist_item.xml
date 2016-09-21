@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:gravity="center_vertical">
 
     <com.balysv.materialripple.MaterialRippleLayout
         android:layout_height="wrap_content"
@@ -88,17 +87,6 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:visibility="visible" >
-
-        <ImageView
-            android:id="@+id/_routeadapter_right_Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:gravity="right|center_vertical"
-            android:src="@drawable/linedetail_coming"
-            android:visibility="gone"/>
 
           <TextView
               android:id="@+id/_routeadapter_arrtime"

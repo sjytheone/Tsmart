@@ -54,7 +54,7 @@ public class RouteFragment extends Fragment {
 	private void InitData(){
 
 		items = MyApp.theIns().getRailWayLineItems();
-		mRecyclerAdapter = new RouteLineRecyclerAdapter(getContext(),items);
+		mRecyclerAdapter = new RouteLineRecyclerAdapter(getContext(),items,RouteLineRecyclerAdapter.FLAG_RAILWAY);
 
 		mRecyclerAdapter.setOnAdapterItemClickListener(new OnAdapterItemClickListener() {
 			@Override

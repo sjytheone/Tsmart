@@ -28,7 +28,7 @@
 
             <ImageView
                 android:id="@+id/bdmap_maplayer"
-                android:layout_width="wrap_content" android:layout_height="45dp" android:src="@drawable/selector_maplayer" android:layout_weight="1.0"
+                android:layout_width="wrap_content" android:layout_height="45dp" android:src="@drawable/ic_layers_black_24dp" android:layout_weight="1.0"
                 android:clickable="true" />
 
             <!--<ImageView android:id="@+id/mainmap_zoom_in" android:layout_width="45dp" android:layout_height="45dp" android:src="@drawable/cm_mainmap_zoom_in_bg" android:layout_weight="1.0" />
@@ -38,7 +38,7 @@
 
         <ImageView
             android:id="@+id/bdmap_redo"
-            android:layout_width="wrap_content" android:layout_height="45dp" android:src="@drawable/ride_path_ic" android:layout_weight="1.0"
+            android:layout_width="wrap_content" android:layout_height="45dp" android:src="@drawable/ic_access_time_24dp" android:layout_weight="1.0"
             android:clickable="true" />
 
 

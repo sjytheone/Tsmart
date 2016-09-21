@@ -74,32 +74,32 @@ public class TileMapRailOption implements Serializable {
 
     public void setRailStatus(int status){
         mrailstatus = status;
-        if (mRailOption != null){
-            String pngPath = "bigmaps/rail_empty.png";
-            if (status == RAILSTATUS_EMPTY){
-                pngPath = "bigmaps/rail_empty.png";
-            }else if (status == RAILSTATUS_NORMAL){
-                pngPath = "bigmaps/rail_normal.png";
-            }else if (status == RAILSTATUS_FULL){
-                pngPath = "bigmaps/rail_full.png";
-            }
-            mRailOption.setDrawable(MyApp.theIns().getBitmapFromAssets(pngPath));
-        }
+//        if (mRailOption != null){
+//            String pngPath = "bigmaps/rail_empty.png";
+//            if (status == RAILSTATUS_EMPTY){
+//                pngPath = "bigmaps/rail_empty.png";
+//            }else if (status == RAILSTATUS_NORMAL){
+//                pngPath = "bigmaps/rail_normal.png";
+//            }else if (status == RAILSTATUS_FULL){
+//                pngPath = "bigmaps/rail_full.png";
+//            }
+//            mRailOption.setDrawable(MyApp.theIns().getBitmapFromAssets(pngPath));
+//        }
     }
 
     public void randomStatus(){
         mrailstatus = getRandomStatus();
-        if (mRailOption != null){
-            String pngPath = "bigmaps/rail_empty.png";
-            if (mrailstatus == RAILSTATUS_EMPTY){
-                pngPath = "bigmaps/rail_empty.png";
-            }else if (mrailstatus == RAILSTATUS_NORMAL){
-                pngPath = "bigmaps/rail_normal.png";
-            }else if (mrailstatus == RAILSTATUS_FULL){
-                pngPath = "bigmaps/rail_full.png";
-            }
-            mRailOption.setDrawable(MyApp.theIns().getBitmapFromAssets(pngPath));
-        }
+//        if (mRailOption != null){
+//            String pngPath = "bigmaps/rail_empty.png";
+//            if (mrailstatus == RAILSTATUS_EMPTY){
+//                pngPath = "bigmaps/rail_empty.png";
+//            }else if (mrailstatus == RAILSTATUS_NORMAL){
+//                pngPath = "bigmaps/rail_normal.png";
+//            }else if (mrailstatus == RAILSTATUS_FULL){
+//                pngPath = "bigmaps/rail_full.png";
+//            }
+//            mRailOption.setDrawable(MyApp.theIns().getBitmapFromAssets(pngPath));
+//        }
     }
 
     private int mrailstatus = RAILSTATUS_EMPTY;

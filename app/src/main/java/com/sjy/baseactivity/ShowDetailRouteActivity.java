@@ -39,7 +39,15 @@ public class ShowDetailRouteActivity extends BasicActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.showdetail_activity);
-        InitView();
+        Bundle bd = getIntent().getBundleExtra("information");
+        InitView(bd);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle bd = intent.getBundleExtra("information");
+        InitView(bd);
     }
 
     @Override
@@ -47,7 +55,7 @@ public class ShowDetailRouteActivity extends BasicActivity{
         super.onDestroy();
     }
 
-    public void InitView(){
+    public void InitView(Bundle bd){
         Toolbar tb = (Toolbar)findViewById(R.id.tb_functiontoolbar);
         tb.setTitleTextColor(getResources().getColor(R.color.theme_white));
         setSupportActionBar(tb);
@@ -63,7 +71,6 @@ public class ShowDetailRouteActivity extends BasicActivity{
         getSupportActionBar().setTitle("");
 
 
-        Bundle bd = getIntent().getBundleExtra("information");
         String strRouteID = bd.getString("strRouteID");
 
         mDetailView = (RecyclerView) findViewById(R.id.activity_recyclerDetail);
@@ -101,7 +108,7 @@ public class ShowDetailRouteActivity extends BasicActivity{
         if (strDestination != null && !strDestination.isEmpty()){
             tv = new TextView(getApplicationContext());
             tv.setTextColor(getResources().getColor(R.color.white));
-            tv.setTextSize(20);
+            tv.setTextSize(15);
             tv.setText(strDestination);
             container.addView(tv);
         }
@@ -109,7 +116,7 @@ public class ShowDetailRouteActivity extends BasicActivity{
         if (strTime != null && !strTime.isEmpty()){
             tv = new TextView(getApplicationContext());
             tv.setTextColor(getResources().getColor(R.color.white));
-            tv.setTextSize(16);
+            tv.setTextSize(15);
             tv.setText(strTime);
             container.addView(tv);
         }

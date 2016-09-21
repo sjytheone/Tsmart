@@ -2,11 +2,15 @@ package com.sjy.functionfragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +18,10 @@ import android.view.ViewGroup;
 
 import com.sjy.adapter.OnAdapterItemClickListener;
 import com.sjy.adapter.RailTimeRecyclerAdapter;
+import com.sjy.adapter.RouteLineRecyclerAdapter;
+import com.sjy.adapter.TabPagerAdpter;
+import com.sjy.baseactivity.ShowDetailRouteActivity;
+import com.sjy.baseactivity.ShowDetailTimeTableActivity;
 import com.sjy.baseactivity.ShowRailTimeTable;
 import com.sjy.beans.RailItemBean;
 import com.sjy.beans.RailWayLineItem;
@@ -22,6 +30,7 @@ import com.sjy.bushelper.MyApp;
 import com.sjy.bushelper.R;
 import com.sjy.divider.HorizontalDividerItemDecoration;
 import com.sjy.listener.IFragemDataListener;
+import com.sjy.widget.RecyclerRouteView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +38,8 @@ import java.util.List;
 public class TimeTableFragment extends Fragment implements IFragemDataListener {
 
     private RecyclerView mRecyclerView;
-    private RailTimeRecyclerAdapter mRailTimeRecyclerAdapter;
-    private List<RailItemBean> mRailData = new ArrayList<>();
+    private RouteLineRecyclerAdapter mRecyclerAdapter;
+    private List<RailWayLineItem> items;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,62 +62,35 @@ public class TimeTableFragment extends Fragment implements IFragemDataListener {
         return v;
     }
 
-    public void InitData(){
-        mRailData.clear();
-        List<RailWayTimeTable> timeTables = MyApp.theIns().getRailWayTimeTables();
-        //List<RouteLineItemBean> routeLines = MyApp.theIns().getAllRouteLine();
-        List<RailWayLineItem> railWayLines = MyApp.theIns().getRailWayLineItems();
-        for (RailWayLineItem railWayLineItem : railWayLines){
-            RailItemBean descItem = new RailItemBean();
-            descItem.setRailID(railWayLineItem.getRailWayLineName());
-            descItem.setType(RailItemBean.DESCRIBITEMBEAN);
-            mRailData.add(descItem);
-            for (RailWayTimeTable it : timeTables){
-                if (it.getBelongRouteID().contains(railWayLineItem.getRailWayLineID())){
-                    RailItemBean bean = new RailItemBean();
-                    bean.setRailID(it.getmRailWayTrainID());
-                    bean.setRailDesc(it.getTimeDesc());
-                    mRailData.add(bean);
-                }
-            }
-
-        }
-
-        mRailTimeRecyclerAdapter = new RailTimeRecyclerAdapter(getContext(),mRailData);
-        mRecyclerView.setAdapter(mRailTimeRecyclerAdapter);
-        mRailTimeRecyclerAdapter.setOnAdapterItemClickListener(mItemClickListener);
-        mRailTimeRecyclerAdapter.notifyDataSetChanged();
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
-    private OnAdapterItemClickListener mItemClickListener = new OnAdapterItemClickListener() {
-        @Override
-        public void onAdapterItemClickListener(View v, int postion) {
-            RailItemBean item = mRailData.get(postion);
-            if (item == null)
-                return;
+    public void InitData(){
+        items = MyApp.theIns().getRailWayLineItems();
+        mRecyclerAdapter = new RouteLineRecyclerAdapter(getContext(),items,RouteLineRecyclerAdapter.FLAG_TIMETABLE);
 
+        mRecyclerAdapter.setOnAdapterItemClickListener(new OnAdapterItemClickListener() {
+            @Override
+            public void onAdapterItemClickListener(View v, int postion) {
+                RailWayLineItem itemBean = items.get(postion);
+                Intent intent = new Intent();
+                intent.setClass(getContext(),ShowDetailTimeTableActivity.class);
+                Bundle bd = new Bundle();
+                String strMain= String.format("起点:%s->终点:%s",itemBean.getFirstStation(),itemBean.getLastStation());
+                String strSub= String.format("首班车:%s 末班车:%s",itemBean.getFirstRailWayTime(),itemBean.getLastRailWayTime());
+                bd.putString("strRouteID",itemBean.getRailWayLineID());
+                bd.putString("strDestination",strMain);
+                bd.putString("strTime",strSub);
+                intent.putExtra("information",bd);
+                startActivity(intent);
+            }
+        });
 
-            Intent intent = new Intent();
-            //intent.setAction("com.sjy.baseactivity.ShowStationActivity");
-            intent.setClass(getActivity().getApplicationContext(), ShowRailTimeTable.class);
-            Bundle bd = new Bundle();
-            bd.putString("strID",item.getRailID());
-            bd.putString("strDesc",item.getRailDesc());
-            intent.putExtra("information",bd);
-            startActivity(intent);
-        }
-    };
+        mRecyclerView.setAdapter(mRecyclerAdapter);
+        mRecyclerAdapter.notifyDataSetChanged();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()){
-//            case R.id.action_routeselect:
-//                ShowPopWindow();
-//                break;
-//            default:
-//                break;
-//        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

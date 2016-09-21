@@ -41,10 +41,7 @@ public class RailTimeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
             RailTimeHolder holder = new RailTimeHolder(view);
             Viewholder = holder;
         }else if (viewType == RailItemBean.DESCRIBITEMBEAN){
-            View view = LayoutInflater.from(mContext).inflate(
-                    R.layout.railtimerecycler_title_item, parent, false);
-            RailTimeTitleHolder holder = new RailTimeTitleHolder(view);
-            Viewholder = holder;
+
         }
 
         return Viewholder;
@@ -107,7 +104,7 @@ public class RailTimeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView tvRouteName;
         public RailTimeTitleHolder(View itemView) {
             super(itemView);
-            tvRouteName = (TextView) itemView.findViewById(R.id.railtimerecycler_title_name);
+            //tvRouteName = (TextView) itemView.findViewById(R.id.railtimerecycler_title_name);
         }
     }
     public void setOnAdapterItemClickListener(OnAdapterItemClickListener listener){

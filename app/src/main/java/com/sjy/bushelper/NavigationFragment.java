@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.sjy.adapter.ColorListAdapter;
 import com.sjy.utils.SPUtils;
+import com.sjy.utils.ThemeUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,32 +72,33 @@ public class NavigationFragment extends Fragment {
 
 		NavigationBean ib = new NavigationBean();
 		ib.strNavigationName = "主页";
-		ib.drawable = getResources().getDrawable(R.drawable.map_black_54x54);
+		ib.drawable = ContextCompat.getDrawable(getContext(),R.drawable.ic_map_black_24dp);
 		mNavData.add(ib);
 
 		ib = new NavigationBean();
 		ib.strNavigationName = "线路";
-		ib.drawable = getResources().getDrawable(R.drawable.directions_railway_black_54x54);
+		ib.drawable = ContextCompat.getDrawable(getContext(),R.drawable.ic_railway_24dp);
 		mNavData.add(ib);
 
 		ib = new NavigationBean();
 		ib.strNavigationName = "车站";
-		ib.drawable = getResources().getDrawable(R.drawable.pin_drop_black_54x54);
+		ib.drawable = ContextCompat.getDrawable(getContext(),R.drawable.ic_stations_24dp);
 		mNavData.add(ib);
 
 		ib = new NavigationBean();
 		ib.strNavigationName = "路径";
-		ib.drawable = getResources().getDrawable(R.drawable.timeline_black_54x54);
+		ib.drawable = ContextCompat.getDrawable(getContext(),R.drawable.ic_route_24dp);
 		mNavData.add(ib);
 
 		ib = new NavigationBean();
 		ib.strNavigationName = "时刻表";
-		ib.drawable = getResources().getDrawable(R.drawable.query_builder_black_54x54);
+		ib.drawable = ContextCompat.getDrawable(getContext(),R.drawable.ic_access_time_24dp);
 		mNavData.add(ib);
 
 		ib = new NavigationBean();
 		ib.strNavigationName = "关于";
-		ib.drawable = getResources().getDrawable(R.drawable.info_black_54x54);
+		ib.drawable = ContextCompat.getDrawable(getContext(),R.drawable.ic_about);
+
 		mNavData.add(ib);
 
 
@@ -134,9 +136,19 @@ public class NavigationFragment extends Fragment {
 
 		private Context mContext;
 		private List<NavigationBean> mData;
+		private int itemtextcolor = Color.BLACK;
+		private int itemSelectedtextcolor;
 		NavigationAdapter(Context context,List<NavigationBean> ls){
 			this.mContext = context;
 			this.mData = ls;
+			TypedValue typedValue = new  TypedValue();
+			mContext.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+			itemSelectedtextcolor = typedValue.data;
+
+			ThemeUtils.Theme currentTheme = ThemeUtils.getCurrentTheme(mContext);
+			if (currentTheme.getIntValue() == ThemeUtils.Theme.BLACK.getIntValue()){
+				itemtextcolor = ContextCompat.getColor(mContext,R.color.text_color);
+			}
 		}
 		@Override
 		public int getCount() {
@@ -169,12 +181,11 @@ public class NavigationFragment extends Fragment {
 			NavigationBean nib = (NavigationBean) getItem(position);
 			holder.navigation_name.setText(nib.strNavigationName);
 			holder.imageview.setImageDrawable(nib.drawable);
-			holder.navigation_name.setTextColor(Color.BLACK);
+			holder.navigation_name.setTextColor(itemtextcolor);
 			//tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
 			//holder.navigation_name.setBackgroundColor(Color.TRANSPARENT);
 			if (position == mCurSelect){
-				holder.navigation_name.setTextColor(getResources().getColor(R.color.theme_press_blue));
-
+				holder.navigation_name.setTextColor(itemSelectedtextcolor);
 				//holder.navigation_name.setBackgroundColor(ContextCompat.getColor(mContext,R.color.line_color));
 			}
 

@@ -2,7 +2,11 @@ package com.sjy.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,13 +41,16 @@ import rx.functions.Action1;
 public class RouteLineRecyclerAdapter extends RecyclerView.Adapter<RouteLineRecyclerAdapter.RouteLineHolder> {
 
     final static String TAG = RouteLineRecyclerAdapter.class.getSimpleName();
+    public final static int FLAG_RAILWAY = 0;
+    public final static int FLAG_TIMETABLE = 1;
     private Context mContext;
     private List<RailWayLineItem> mData;
     private OnAdapterItemClickListener mOnAdapterItemClickListener;
-
-    public RouteLineRecyclerAdapter(Context context, List<RailWayLineItem> data) {
+    private int mFlag = FLAG_RAILWAY;
+    public RouteLineRecyclerAdapter(Context context, List<RailWayLineItem> data,int nflag) {
         mContext = context;
         mData = data;
+        mFlag = nflag;
     }
 
     @Override
@@ -63,6 +70,16 @@ public class RouteLineRecyclerAdapter extends RecyclerView.Adapter<RouteLineRecy
         holder.routeMainItem2.setText(strMain);
         String strSub= String.format("首班车:%s 末班车:%s",itemBean.getFirstRailWayTime(),itemBean.getLastRailWayTime());
         holder.routeSubItem.setText(strSub);
+        if (mFlag == FLAG_TIMETABLE){
+            Drawable dw = ContextCompat.getDrawable(mContext,R.drawable.ic_alarm_black_24dp);
+            holder.imageView.setImageDrawable(dw);
+            //holder.imageView.setImageResource(R.drawable.access_alarms_black_54x54);
+            //holder.imageView.setImageBitmap();
+        }else {
+
+            Drawable dw = ContextCompat.getDrawable(mContext,R.drawable.ic_railway_24dp);
+            holder.imageView.setImageDrawable(dw);
+        }
     }
 
     @Override
@@ -72,6 +89,7 @@ public class RouteLineRecyclerAdapter extends RecyclerView.Adapter<RouteLineRecy
 
     public class RouteLineHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        ImageView imageView;
         TextView routeMainItem;
         TextView routeMainItem2;
         TextView routeSubItem;
@@ -79,6 +97,7 @@ public class RouteLineRecyclerAdapter extends RecyclerView.Adapter<RouteLineRecy
 
         public RouteLineHolder(View itemView) {
             super(itemView);
+            imageView = (ImageView) itemView.findViewById(R.id.left_imageview);
             routeMainItem = (TextView) itemView.findViewById(R.id._routeitem_maintv);
             routeSubItem = (TextView) itemView.findViewById(R.id._routeitem_subtv);
             routeMainItem2 = (TextView) itemView.findViewById(R.id._routeitem_maintv2);

@@ -131,16 +131,16 @@ public class StationFragment extends Fragment {
             // If there is no item for current section, previous section will be selected
             for (int i = section; i >= 0; i--) {
                 for (int j = 0; j < getCount(); j++) {
-                    RouteItemBean ib = (RouteItemBean)getItem(j);
+                    BigMapstationInfo ib = (BigMapstationInfo)getItem(j);
                     if (i == 0) {
                         // For numeric section
                         for (int k = 0; k <= 9; k++) {
-                            String strout = CharacterParser.getInstance().getSelling((String)ib.getStrStationName()).toUpperCase();
+                            String strout = CharacterParser.getInstance().getSelling((String)ib.getStationName()).toUpperCase();
                            if (strout.charAt(0) == String.valueOf(k).charAt(0))
                                 return j;
                         }
                     } else {
-                        String strout = CharacterParser.getInstance().getSelling((String)ib.getStrStationName()).toUpperCase();
+                        String strout = CharacterParser.getInstance().getSelling((String)ib.getStationName()).toUpperCase();
                         String t = String.valueOf(mSections.charAt(i));
                         if (strout.charAt(0) == t.charAt(0))
                             return j;

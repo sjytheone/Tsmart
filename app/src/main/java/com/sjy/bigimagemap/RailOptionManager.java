@@ -60,7 +60,8 @@ public class RailOptionManager {
                 option.setStrStartTime(table.getStrStartTime());
                 option.setStrEndTime(table.getStrEndTime());
                 BigMapDrawOverlay overlay = new BigMapDrawOverlay();
-                overlay.setDrawable(MyApp.theIns().getBitmapFromAssets("bigmaps/rail_empty.png"));
+                String drawable = MyApp.theIns().getRailDrawable(table.getBelongRouteID());
+                overlay.setDrawable(MyApp.theIns().getBitmapFromAssets("bigmaps/" + drawable));
                 option.setOverlayOption(overlay);
                 overlay.PutExtraInfo("railinfo", option);
                 mlsRailOptions.add(option);

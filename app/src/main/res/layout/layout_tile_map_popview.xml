@@ -4,8 +4,10 @@
     android:elevation="5dp">
 
     <RelativeLayout android:id="@+id/main_map_popview_tile" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10.0dip">
-        <ImageView android:src="@drawable/ic_tab_local_x_sel" android:id="@+id/main_map_popview_line_icon" android:layout_width="30dp" android:layout_height="30.0dip" android:layout_alignParentLeft="true" android:layout_centerVertical="true" />
-        <TextView android:textSize="18.0sp" android:textStyle="bold" android:text="站点名称" android:textColor="@color/black" android:id="@+id/tile_map_popview_station_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_toRightOf="@id/main_map_popview_line_icon" android:layout_centerVertical="true" />
+        <ImageView android:src="@drawable/ic_manage" android:id="@+id/main_map_popview_line_icon" android:layout_width="30dp" android:layout_height="30.0dip" android:layout_alignParentLeft="true" android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false" />
+        <TextView android:textSize="20.0sp" android:textStyle="bold" android:text="站点名称" android:textColor="@color/black" android:id="@+id/tile_map_popview_station_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_toRightOf="@id/main_map_popview_line_icon" android:layout_centerVertical="true" />
     </RelativeLayout>
     <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0dip" android:id="@+id/map_popvie_stattiondesc" android:visibility="gone">
         <View android:background="@color/them_gray" android:layout_width="fill_parent" android:layout_height="1.0dip" />

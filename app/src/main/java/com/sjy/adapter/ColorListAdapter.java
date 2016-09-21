@@ -53,7 +53,7 @@ public class ColorListAdapter extends BaseAdapter {
         }
         holder.imageView1.setImageResource(list.get(position));
         if (checkItem == position){
-            holder.imageView2.setImageResource(R.drawable.ic_done_white);
+            holder.imageView2.setImageResource(R.drawable.ic_check_24dp);
         }
         return convertView;
     }

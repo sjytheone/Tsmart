@@ -374,4 +374,18 @@ public class MyApp extends Application{
         }
         return null;
     }
+
+    public String getRailDrawable(String strRouteID){
+        String railDrawable = "rail_1.png";
+        if (strRouteID.contains("1")){
+            railDrawable = "rail_1.png";
+        } else if (strRouteID.contains("2")){
+            railDrawable = "rail_2.png";
+        } else if (strRouteID.contains("3")){
+            railDrawable = "rail_3.png";
+        } else if (strRouteID.contains("5")){
+            railDrawable = "rail_5.png";
+        }
+        return railDrawable;
+    }
 }

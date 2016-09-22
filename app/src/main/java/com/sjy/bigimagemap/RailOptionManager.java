@@ -1,5 +1,6 @@
 package com.sjy.bigimagemap;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 
 import com.sjy.beans.RailWayTimeTable;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.sjy.bigimagemap.TileMapRailOption.RAILSTATUS_NORMAL;
 
 /**
  * Created by sjy on 2016/7/9 0009.
@@ -60,13 +63,19 @@ public class RailOptionManager {
                 option.setStrStartTime(table.getStrStartTime());
                 option.setStrEndTime(table.getStrEndTime());
                 BigMapDrawOverlay overlay = new BigMapDrawOverlay();
-                String drawable = MyApp.theIns().getRailDrawable(table.getBelongRouteID());
-                overlay.setDrawable(MyApp.theIns().getBitmapFromAssets("bigmaps/" + drawable));
+                overlay.setOnlyShowBackGround(false);
+                Bitmap drawable = MyApp.theIns().getRailDrawable(table.getBelongRouteID());
+                Bitmap status = MyApp.theIns().getStatusDrawable(RAILSTATUS_NORMAL);
+                Bitmap direction = MyApp.theIns().getRailDirection(table.getBelongRouteID(),table.getRailwayDirection());
+                overlay.setBackGroundDrawable(drawable);
+                //overlay.setmBitmapRail(status);
+                overlay.setBitmapDirection(direction);
+
                 option.setOverlayOption(overlay);
                 overlay.PutExtraInfo("railinfo", option);
                 mlsRailOptions.add(option);
-                option.setRailOptionCurPos();
                 option.randomStatus();
+                option.setRailOptionCurPos();
                 mTileMap.addRailOption(overlay);
 
 

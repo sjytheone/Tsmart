@@ -1,5 +1,6 @@
 package com.sjy.bigimagemap;
 
+import android.graphics.Bitmap;
 import android.graphics.Point;
 
 import com.sjy.beans.BigMapstationInfo;
@@ -89,17 +90,10 @@ public class TileMapRailOption implements Serializable {
 
     public void randomStatus(){
         mrailstatus = getRandomStatus();
-//        if (mRailOption != null){
-//            String pngPath = "bigmaps/rail_empty.png";
-//            if (mrailstatus == RAILSTATUS_EMPTY){
-//                pngPath = "bigmaps/rail_empty.png";
-//            }else if (mrailstatus == RAILSTATUS_NORMAL){
-//                pngPath = "bigmaps/rail_normal.png";
-//            }else if (mrailstatus == RAILSTATUS_FULL){
-//                pngPath = "bigmaps/rail_full.png";
-//            }
-//            mRailOption.setDrawable(MyApp.theIns().getBitmapFromAssets(pngPath));
-//        }
+        if (mRailOption != null){
+            Bitmap bitmap = MyApp.theIns().getStatusDrawable(mrailstatus);
+            mRailOption.setmBitmapRail(bitmap);
+        }
     }
 
     private int mrailstatus = RAILSTATUS_EMPTY;

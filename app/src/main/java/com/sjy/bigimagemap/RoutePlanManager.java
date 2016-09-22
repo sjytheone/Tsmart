@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +74,7 @@ public class RoutePlanManager {
             mTileMap.setTileMode(BigTileMap.TileMapMode.GRID);
             if (mOriginationOverlay == null){
                 mOriginationOverlay = new BigMapFlagDrawOverlay();
-                mOriginationOverlay.setDrawable(MyApp.theIns().getBitmapFromAssets("bigmaps/transit_start_ic.png"));
+                mOriginationOverlay.setBackGroundDrawable(MyApp.theIns().getBitmapFromAssets("bigmaps/transit_start_ic.png"));
                 mOriginationOverlay.setPoint(new Point((int) info.getDotX(), (int) info.getDotY()));
                 mOriginationOverlay.setFlag(BigMapFlagDrawOverlay.ORIGINATION);
                 mTileMap.AddNaviOption(mOriginationOverlay);
@@ -102,7 +103,7 @@ public class RoutePlanManager {
             mTileMap.setTileMode(BigTileMap.TileMapMode.GRID);
             if (mTerminusOverlay == null){
                 mTerminusOverlay = new BigMapFlagDrawOverlay();
-                mTerminusOverlay.setDrawable(MyApp.theIns().getBitmapFromAssets("bigmaps/transit_end_ic.png"));
+                mTerminusOverlay.setBackGroundDrawable(MyApp.theIns().getBitmapFromAssets("bigmaps/transit_end_ic.png"));
                 mTerminusOverlay.setPoint(new Point((int) info.getDotX(), (int) info.getDotY()));
                 mTerminusOverlay.setFlag(BigMapFlagDrawOverlay.TEMINATION);
                 mTileMap.AddNaviOption(mTerminusOverlay);
@@ -754,10 +755,23 @@ public class RoutePlanManager {
     //将结果回掉到外部显示
     public void RoutePlanResultCallBack(){
 
+        Collections.sort(allRouteList,new CostTimeComparator());
         if (mRoutePlanListener != null){
             mRoutePlanListener.onRouteComputeResults(allRouteList);
         }
 
 
+    }
+
+    public class CostTimeComparator implements Comparator {
+
+        @Override
+        public int compare(Object o1, Object o2) {
+            StationPassTime t1 = (StationPassTime) o1;
+            StationPassTime t2 = (StationPassTime) o2;
+            long c1 = t1.costtime;
+            long c2 = t2.costtime;
+            return Long.valueOf(c1).compareTo(Long.valueOf(c2));
+        }
     }
 }

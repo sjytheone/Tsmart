@@ -45,7 +45,8 @@ public class RailWayTimeTable {
 
 
     private String strEndTime;
-
+    private String firstStation;
+    private int railwayDirection = 1;
     public void setStrRailWayTrainID(String trainID){
         mRailWayTrainID = trainID;
     }
@@ -60,6 +61,9 @@ public class RailWayTimeTable {
 
     public void AddNode(String stationID,String arrTime){
         TimeItemBean ib = new TimeItemBean(arrTime);
+//        if (mMapStationVTime.size() == 0){
+//            firstStation = stationID;
+//        }
         mMapStationVTime.put(stationID,ib);
 
         //pace
@@ -176,6 +180,9 @@ public class RailWayTimeTable {
                 this.strEndTime = entry.getValue().getstrTime();
             }
         }
+//        if(strEndStationID.compareTo(firstStation) !=0){
+//            railwayDirection = 2;
+//        }
     }
 
     public boolean isInTimeSection(){
@@ -218,11 +225,21 @@ public class RailWayTimeTable {
     }
 
     public int railWayDerection(String sid,String eid){
-        if (StationIndex(sid) > StationIndex(eid))
+        if (StaIndex(sid) > StaIndex(eid))
             return 2;
         return 1;
     }
 
+    public int getRailwayDirection(){
+        int x = 2;
+        int s = Integer.parseInt(startStationID);
+        int e = Integer.parseInt(strEndStationID);
+        if (s >= e){
+            x = 1;
+        }
+        return x;
+        //return railWayDerection(startStationID,strEndStationID);
+    }
     //获取列车终点站名称
     public String getDestinationID(){
         return strEndStationID;

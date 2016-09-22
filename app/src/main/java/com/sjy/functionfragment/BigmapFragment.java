@@ -123,7 +123,6 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
 
         mDetailImageView = (ImageView) v.findViewById(R.id.detailImageview);
         mDetailImageView.setClickable(true);
-        mDetailImageView.setOnTouchListener(myTouchListener);
         mDetailImageView.setOnClickListener(mClickListener);
 
         mRoutPlanMgr = new RoutePlanManager(mBigImageView);
@@ -132,6 +131,8 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
             mRoutPlanMgr.setRoutePlanListener(this);
         }else {
             ImageView imgVie = (ImageView) v.findViewById(R.id.tile_maplayer);
+            imgVie.setVisibility(View.VISIBLE);
+            imgVie.setOnTouchListener(myTouchListener);
             imgVie.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -153,7 +154,7 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
         mapView.setOnImageEventListener(new SubsamplingScaleImageView.OnImageEventListener() {
             @Override
             public void onReady() {
-                mapView.setMaxScale(2.5f);
+                mapView.setMaxScale(2.3f);
                 mapView.setMinScale(0.6f);
                 mapView.setDoubleTapZoomScale(2.0f);
                 mapView.setDoubleTapZoomDuration(1000);
@@ -255,6 +256,24 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
                     mtv.startFor0();
                 }
             }
+            //
+            if (MyApp.theIns().BusinessInfo.containsKey(station.getStationID())){
+                String strout = MyApp.theIns().BusinessInfo.get(station.getStationID());
+                MarqueeTextView mtv = new MarqueeTextView(getContext());
+                TypedValue typedValue = new  TypedValue();
+                getContext().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                int textcolor = typedValue.data;
+                String out = "商业地标:" + strout;
+                mtv.setTextColor(textcolor);
+                mtv.setTextSize(18);
+                mtv.setSingleLine(true);
+                mtv.setText(out);
+                //LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mtv.getLayoutParams();
+                containerdesc.addView(mtv);
+                bshowview = true;
+                mtv.startFor0();
+            }
+            //
             LinearLayout linearLayout = (LinearLayout) mViewStationInfo.findViewById(R.id.map_popvie_stattiondesc);
             linearLayout.setVisibility(bshowview ? View.VISIBLE : View.GONE);
 
@@ -470,7 +489,7 @@ public class BigmapFragment extends Fragment implements ITileMapNotify,IRailItem
     @Override
     public void onRouteComputeResults(List<StationPassTime> routeList) {
         if (routeList.isEmpty()){
-            Snackbar.make(mBigImageView,"未找到相关路径",Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mBigImageView,"当前时间段未搜索到可行路径",Snackbar.LENGTH_SHORT).show();
         }
         else {
 

@@ -121,7 +121,7 @@ public class AboutFragment extends Fragment {
                 Snackbar.make(getView(),"主题将在下次启动时生效",Snackbar.LENGTH_SHORT).show();
                 Message msg = new Message();
                 msg.what = Eventenum.EventEn.THEME_CHANGED.getValue();
-                //EventBus.getDefault().post(msg);
+                EventBus.getDefault().post(msg);
             }
         });
 

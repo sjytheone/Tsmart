@@ -18,19 +18,24 @@ import java.io.Serializable;
 public class BigMapDrawOverlay extends BasicMapOverlay{
 
     private BigTileMap mTileMap;
-    private Bitmap mBitmapDrawable;
+    private Bitmap mBackGroundDrawable; //底层
+    private Bitmap mBitmapDirection;
+    private Bitmap mBitmapRail;
     private Paint paint;
     private boolean isVisible = true;
     private Point mPoint;
     private Rect screenRect;
-
     private Rect touchRect;
-
+    private boolean mOnlyShowBackGround = true;
     private Bundle mInfo = new Bundle();
 
     public BigMapDrawOverlay(){
         paint = new Paint(2);
         paint.setColor(Color.YELLOW);
+    }
+
+    public void setOnlyShowBackGround(boolean bshow){
+        mOnlyShowBackGround = bshow;
     }
 
     public void setVisible(boolean bVisible){
@@ -47,11 +52,20 @@ public class BigMapDrawOverlay extends BasicMapOverlay{
         if (isVisible){
             //canvas.drawRect(new Rect(500,500,1000,1000),paint);
             //canvas.drawBitmap(getDrawable(), new Rect(1000,100,100,100), getScreenRect(), this.paint);
-            Rect rc = getScreenRect();
-            //canvas.drawBitmap(getDrawable(),rc.left,rc.top,paint);
-            canvas.drawBitmap(getDrawable(), null, rc, paint);
             //canvas.drawColor(MyApp.theIns().getResources().getColor(R.color.halftransparent));
             //canvas.drawBitmap();
+            Rect rcBackground = getBackGroundDrawableRect();
+                //canvas.drawBitmap(getDrawable(),rc.left,rc.top,paint);
+            canvas.drawBitmap(getBackGroundDrawable(), null, rcBackground, paint);
+            if (!mOnlyShowBackGround){
+                if (mBitmapRail != null){
+                    //Rect rcRail = getRailDrawableRect();
+                    canvas.drawBitmap(mBitmapRail,null,rcBackground,paint);
+                }
+                if (mBitmapDirection != null){
+                    canvas.drawBitmap(mBitmapDirection,null,rcBackground,paint);
+                }
+            }
         }else {
             //localTCTileMapOverlayItem.getScreenRect(this.tcTileMap, false);
         }
@@ -73,23 +87,47 @@ public class BigMapDrawOverlay extends BasicMapOverlay{
         mTileMap = null;
     }
 
-    public void setDrawable(Bitmap bmap){
-        mBitmapDrawable = bmap;
+    public void setBackGroundDrawable(Bitmap bitmap){ mBackGroundDrawable = bitmap;}
+
+    public void setBitmapDirection(Bitmap bitmap){ mBitmapDirection = bitmap;}
+
+    public void setmBitmapRail(Bitmap bitmap){mBitmapRail = bitmap;}
+
+
+    public Bitmap getBackGroundDrawable(){
+        return mBackGroundDrawable;
     }
 
-    public Bitmap getDrawable(){
-        return mBitmapDrawable;
+    Rect getRailDrawableRect(){
+        PointF localPoint = mTileMap.sourceToViewCoord(mPoint.x,mPoint.y);
+        float fscale = mTileMap.getScale();
+        if(fscale < 1.0f) {
+            //fscale = 1.0f;
+        }
+        //localPoint.x += getOffsetX();
+        //localPoint.y += getOffsetY();
+        Rect rc = new Rect();
+
+        Bitmap localBitmap = mBitmapRail;
+        if (localBitmap != null) {
+            float bitMapWidth = localBitmap.getWidth() * fscale;
+            float bitMapHeight = localBitmap.getHeight() * fscale;
+            rc.left = (int) (localPoint.x - bitMapWidth / 2);
+            rc.top = (int) (localPoint.y - bitMapHeight / 2);
+            rc.right = (rc.left + (int) bitMapWidth);
+            rc.bottom = (rc.top + (int) bitMapHeight);
+        }
+        return rc;
+
     }
 
-
-    Rect getScreenRect()
+    Rect getBackGroundDrawableRect()
     {
         PointF localPoint = mTileMap.sourceToViewCoord(mPoint.x,mPoint.y);
         float fscale = mTileMap.getScale();
         if(fscale < 1.0f) {
             //fscale = 1.0f;
          }
-
             //localPoint.x += getOffsetX();
             //localPoint.y += getOffsetY();
             if (this.screenRect == null)
@@ -98,7 +136,8 @@ public class BigMapDrawOverlay extends BasicMapOverlay{
             if (touchRect == null)
                 touchRect = new Rect();
 
-            Bitmap localBitmap = getDrawable();
+            //Bitmap localBitmap = getBackGroundDrawable();
+            Bitmap localBitmap = getBackGroundDrawable();
             if (localBitmap != null) {
                 //screenRect.left = (int)localPoint.x;
                 //screenRect.top = (int)localPoint.y;

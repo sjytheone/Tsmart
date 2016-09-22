@@ -29,6 +29,10 @@ import java.util.Map;
 
 import im.fir.sdk.FIR;
 
+import static com.sjy.bigimagemap.TileMapRailOption.RAILSTATUS_EMPTY;
+import static com.sjy.bigimagemap.TileMapRailOption.RAILSTATUS_FULL;
+import static com.sjy.bigimagemap.TileMapRailOption.RAILSTATUS_NORMAL;
+
 
 /**
  * Created by Administrator on 2016/3/24.
@@ -45,6 +49,7 @@ public class MyApp extends Application{
     static final public Map<String, List<String>> TransferStations = new HashMap<>();
     static final public Map<String, RailWayLineItem> NetTimeTable = new HashMap<>();
     static final public long transfertime = 180000;//换乘时间
+    static final public Map<String, String> BusinessInfo = new HashMap<>();
     //static final public Map<String, String> StationsPic = new HashMap<>();;//换乘时间
 	
     String mstrCurDateTime;
@@ -88,7 +93,6 @@ public class MyApp extends Application{
         try {
             //getAssets().open(strFile);
             btmap = BitmapFactory.decodeStream(getAssets().open(strPath));
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -142,6 +146,8 @@ public class MyApp extends Application{
                 NetTimeTable.put(item.getRailWayLineID().substring(5),item);
             }
 
+            BusinessInfo.put("0028","中国女人街\r\n兴隆大家庭");
+            BusinessInfo.put("0027","亿丰时代广场\r\n万达广场");
 //            for(BigMapstationInfo item : mFlatBigMapStationpos)
 //            {
 //                for(String n : Stations.keySet()){
@@ -375,17 +381,49 @@ public class MyApp extends Application{
         return null;
     }
 
-    public String getRailDrawable(String strRouteID){
-        String railDrawable = "rail_1.png";
+    public Bitmap getRailDrawable(String strRouteID){
+        String railDrawable = "bigmaps/rail_bitmaps/rail_4.png";
         if (strRouteID.contains("1")){
-            railDrawable = "rail_1.png";
+            railDrawable = "bigmaps/rail_bitmaps/rail_1.png";
         } else if (strRouteID.contains("2")){
-            railDrawable = "rail_2.png";
+            railDrawable = "bigmaps/rail_bitmaps/rail_2.png";
         } else if (strRouteID.contains("3")){
-            railDrawable = "rail_3.png";
+            railDrawable = "bigmaps/rail_bitmaps/rail_3.png";
         } else if (strRouteID.contains("5")){
-            railDrawable = "rail_5.png";
+            railDrawable = "bigmaps/rail_bitmaps/rail_5.png";
         }
-        return railDrawable;
+        return getBitmapFromAssets(railDrawable);
+    }
+
+    public Bitmap getStatusDrawable(int status){
+        String pngPath = "bigmaps/rail_bitmaps/rail_normal.png";
+        if (status == RAILSTATUS_EMPTY){
+            pngPath = "bigmaps/rail_bitmaps/rail_empty.png";
+        }else if (status == RAILSTATUS_NORMAL){
+            pngPath = "bigmaps/rail_bitmaps/rail_normal.png";
+        }else if (status == RAILSTATUS_FULL){
+            pngPath = "bigmaps/rail_bitmaps/rail_full.png";
+        }
+        return getBitmapFromAssets(pngPath);
+    }
+
+    public Bitmap getRailDirection(String strRouteID,int direction){
+        String directionPath = "bigmaps/rail_bitmaps/";
+        String railID = "rail_4";
+        if (strRouteID.contains("1")){
+            railID = "rail_1";
+        } else if (strRouteID.contains("2")){
+            railID = "rail_2";
+        } else if (strRouteID.contains("3")){
+            railID = "rail_3";
+        } else if (strRouteID.contains("5")){
+            railID = "rail_5";
+        }
+        String dirp = "_left";
+        if (direction == 2){
+            dirp = "_right";
+        }
+        directionPath += railID + dirp + ".png";
+        return getBitmapFromAssets(directionPath);
     }
 }

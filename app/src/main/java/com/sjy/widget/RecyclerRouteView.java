@@ -1,28 +1,28 @@
 package com.sjy.widget;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
-import com.sjy.adapter.RoutePlanListAdapter;
 import com.sjy.adapter.RoutePlanRecyclerAdapter;
 import com.sjy.beans.BigMapstationInfo;
 import com.sjy.beans.RoutePlanDetailItem;
-import com.sjy.beans.TimeItemBean;
 import com.sjy.bigimagemap.BigMapFlagDrawOverlay;
 import com.sjy.bigimagemap.BigTileMap;
 import com.sjy.bushelper.MyApp;
@@ -32,9 +32,7 @@ import com.sjy.net.StaPassTime;
 import com.sjy.net.StationPassTime;
 import com.sjy.utils.TimeUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,16 +79,18 @@ public class RecyclerRouteView extends Fragment{
         List<RoutePlanDetailItem> lsDetailItem = new ArrayList<>();
         for (StaPassTime passTime : ls){
 
-            boolean bcontain = filter.contains(passTime.StaCode);
-            if(bcontain)
-                continue;
-            filter.add(passTime.StaCode);
-            RoutePlanDetailItem ib = new RoutePlanDetailItem();
-            ib.setStrStationID(passTime.StaCode);
+            String strStationName = "";
             BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(passTime.StaCode);
             if (info != null){
-                ib.setStrStationName(info.getStationName());
+                strStationName = info.getStationName();
             }
+            boolean bcontain = filter.contains(strStationName);
+            if(bcontain)
+                continue;
+            filter.add(strStationName);
+            RoutePlanDetailItem ib = new RoutePlanDetailItem();
+            ib.setStrStationID(passTime.StaCode);
+            ib.setStrStationName(strStationName);
 
             String strArrtime = TimeUtils.getTime(passTime.StaTime,TimeUtils.DATE_FORMAT_DATE_HM);
             ib.setStrArrayTime(strArrtime);
@@ -143,7 +143,7 @@ public class RecyclerRouteView extends Fragment{
                         bmap = MyApp.theIns().getBitmapFromAssets("bigmaps/transit_end_ic.png");
                     }
                     ++ncounter;
-                    overlay.setDrawable(bmap);
+                    overlay.setBackGroundDrawable(bmap);
                     overlay.setPoint(new Point((int) binfo.getDotX(), (int) binfo.getDotY()));
                     mTileMap.AddNaviOption(overlay);
                     mTileMap.invalidate();

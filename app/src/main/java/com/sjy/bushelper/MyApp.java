@@ -410,19 +410,25 @@ public class MyApp extends Application{
     public Bitmap getRailDirection(String strRouteID,int direction){
         String directionPath = "bigmaps/rail_bitmaps/";
         String railID = "rail_4";
+        String dirp = "_left";
         if (strRouteID.contains("1")){
+            if (direction == 2)
+                dirp = "_right";
             railID = "rail_1";
         } else if (strRouteID.contains("2")){
+            if (direction == 1)
+                dirp = "_right";
             railID = "rail_2";
         } else if (strRouteID.contains("3")){
+            if (direction == 2)
+                dirp = "_right";
             railID = "rail_3";
         } else if (strRouteID.contains("5")){
+            if (direction == 1)
+                dirp = "_right";
             railID = "rail_5";
         }
-        String dirp = "_left";
-        if (direction == 2){
-            dirp = "_right";
-        }
+
         directionPath += railID + dirp + ".png";
         return getBitmapFromAssets(directionPath);
     }

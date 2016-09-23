@@ -45,7 +45,7 @@ public class RailOptionManager {
                 InitRailOptionData();
             }
 
-        }, 10 * 1000);
+        }, 30 * 1000);
 
     }
 
@@ -100,7 +100,7 @@ public class RailOptionManager {
                 moveListener.onRailItemMoved();
             }
 
-            mHandler.postDelayed(mRunableRefreshMarker, 5* 1000);
+            mHandler.postDelayed(mRunableRefreshMarker, 20* 1000);
         }
     };
 

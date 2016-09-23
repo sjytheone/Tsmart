@@ -216,7 +216,6 @@ public class TileMapRailOption implements Serializable {
 
     public void setRailOptionCurPos(){
         ncurStep = mRailWayTimeTable.getTimeStationStep(System.currentTimeMillis());
-
         String strBelongID = lsRouteLine.get(ncurStep);
         BigMapstationInfo info = MyApp.theIns().findBigmapStationByBelongID(strBelongID);
         if (mRailOption != null && info != null){

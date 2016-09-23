@@ -4,6 +4,7 @@ package com.sjy.bushelper;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
@@ -72,6 +73,7 @@ public class NavigationFragment extends Fragment {
 
 		NavigationBean ib = new NavigationBean();
 		ib.strNavigationName = "主页";
+		//Typeface iconfont = Typeface.createFromAsset(getActivity().getAssets(), "iconfont/iconfont.ttf");
 		ib.drawable = ContextCompat.getDrawable(getContext(),R.drawable.ic_map_black_24dp);
 		mNavData.add(ib);
 
